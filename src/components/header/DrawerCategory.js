@@ -2,18 +2,20 @@ import {Button, Drawer} from "antd";
 import {useEffect, useState} from "react";
 import {DownOutlined, UnorderedListOutlined} from "@ant-design/icons";
 import Tree from "antd/es/tree/Tree";
+import { useDispatch } from "react-redux"
+import {getProductsRequest} from "../../redux/products/actions";
+
 
 export function DrawerCategory() {
+  const dispatch = useDispatch();
+
   const [open, setOpen] = useState(false);
   const [option, setOption] = useState("");
-  
+
   useEffect(() => {
-    async function getCategories() {
-      return await fetch("http://localhost:3001/api/guest/categories/get_all")
+        fetch("http://localhost:3001/api/guest/categories/get_all")
         .then(data => data.json())
         .then(data => setOption(data))
-    }
-    getCategories()
   }, [])
 
   const showDrawer = () => {
@@ -28,9 +30,7 @@ export function DrawerCategory() {
     try {
       const id = key[0];
       if (id) {
-        await fetch(`http://localhost:3001/api/guest/categories/${id}/products`)
-          .then(data => data.json())
-          .then(data => console.log(data))
+        dispatch(getProductsRequest("",1));
       }
     } catch (error) {
       return {
