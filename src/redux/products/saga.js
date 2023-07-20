@@ -6,16 +6,16 @@ import {
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
 
-function* getProducts(connectName, id= "all", page= 1, limit= 10, sortDirection = "DESC", sortWith = "price", searchBy= "") {
+function* getProducts(action) {
   try {
-    console.log(id, page)
-
+    const {id, page, limit, sortDirection, sortWith, searchBy, color, size} = action.payload;
+    console.log(color, "aaaaaaaaaaaaaaaaaaaaaaaaaaaa")
     const response = yield instance({
         method: "get",
-        url: `/guest/products/get_all_published/${id}?page=${page}&limit=${limit}&sortDirection=${sortDirection}&sortWith=${sortWith}&searchBy=${searchBy}`
+        url: `/guest/products/get_all_published/${id}?page=${page}&limit=${limit}&sortDirection=${sortDirection}&sortWith=${sortWith}&searchBy=${searchBy}&color=${JSON.stringify(color)}&size=${JSON.stringify(size)}`
       })
 
-    console.log(id)
+    console.log(response)
     if (response.status === 200) {
       yield put(getProductsSuccess(response.data.data))
     } else {

@@ -2,7 +2,8 @@ import {Button, Drawer} from "antd";
 import {useEffect, useState} from "react";
 import {DownOutlined, UnorderedListOutlined} from "@ant-design/icons";
 import Tree from "antd/es/tree/Tree";
-import { useDispatch } from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
+import {getCategoriesRequest} from "../../redux/categories/actions";
 import {getProductsRequest} from "../../redux/products/actions";
 
 
@@ -10,13 +11,12 @@ export function DrawerCategory() {
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
-  const [option, setOption] = useState("");
+  const { filterState } = useSelector((state) => state.products);
+  const { categories } = useSelector((state) => state.categories);
 
   useEffect(() => {
-        fetch("http://localhost:3001/api/guest/categories/get_all")
-        .then(data => data.json())
-        .then(data => setOption(data))
-  }, [])
+    dispatch(getCategoriesRequest());
+  }, [dispatch])
 
   const showDrawer = () => {
     setOpen(true);
@@ -30,7 +30,7 @@ export function DrawerCategory() {
     try {
       const id = key[0];
       if (id) {
-        dispatch(getProductsRequest("",1));
+        dispatch(getProductsRequest({...filterState, id: id}));
       }
     } catch (error) {
       return {
@@ -49,7 +49,7 @@ export function DrawerCategory() {
           showLine
           switcherIcon={<DownOutlined/>}
           onSelect={onSelect}
-          treeData={option}
+          treeData={categories}
         />
       </Drawer>
     </>

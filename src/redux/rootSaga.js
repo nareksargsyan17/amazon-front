@@ -1,8 +1,14 @@
+import { all } from "redux-saga/effects";
 import productsSaga from "./products/saga";
-import {all} from "redux-saga/effects";
+import categoriesSaga from "./categories/saga";
+import colorsSaga from "./colors/saga";
+import sizesSaga from "./sizes/saga";
 
 export default function* rootSaga() {
   yield all([
-    productsSaga()
+    productsSaga(),
+    categoriesSaga(),
+    colorsSaga(),
+    sizesSaga()
   ])
 }
