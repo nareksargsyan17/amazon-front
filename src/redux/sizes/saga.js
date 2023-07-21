@@ -13,7 +13,6 @@ function* getSizes() {
       method: "get",
       url: "/guest/sizes/get_all"
     })
-    console.log(response.data.data, "sizes")
     if (response.status === 200) {
       yield put(getSizesSuccess(response.data.data));
     } else {

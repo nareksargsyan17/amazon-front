@@ -4,8 +4,13 @@ import {Image, Space} from "antd";
 import { SearchBar } from "./SearchBar";
 import {RegistrationBar} from "./RegistrationBar";
 import {ShopingCart} from "./ShopingCart";
+import {useNavigate} from "react-router-dom";
 
 export function HeaderBar() {
+  const navigate = useNavigate()
+  const onRouteHome = () => {
+    navigate("/")
+  }
     return (
         <Header
             style={{
@@ -16,7 +21,7 @@ export function HeaderBar() {
         >
           <Space wrap>
             <DrawerCategory />
-            <Image src="logo.png" preview={false} width={50} style={{ cursor: "pointer" }}/>
+            <Image src="logo.png" preview={false} width={50} style={{ cursor: "pointer" }} onClick={onRouteHome}/>
           </Space>
           <SearchBar />
           <Space align="center">

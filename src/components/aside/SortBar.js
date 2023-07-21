@@ -1,6 +1,6 @@
 import {Select, Space, Typography} from 'antd';
 import {useDispatch, useSelector} from "react-redux";
-import {getProductsRequest} from "../../redux/products/actions";
+import {changeFilterRequest} from "../../redux/products/actions";
 const { Text } = Typography;
 
 
@@ -11,7 +11,7 @@ export default function SortBar() {
   const handleChange = (value) => {
     value = JSON.parse(value);
     console.log(value)
-    dispatch(getProductsRequest({...filterState, ...value}));
+    dispatch(changeFilterRequest({...filterState, ...value}));
   };
   return <>
     <Space direction="vertical">

@@ -14,7 +14,7 @@ export default function PaginationBar() {
   };
 
   return (
-    <Space style={{display: products.rows.length > 0 ? "flex" : "none", justifyContent: "center"}}>
-      <Pagination current={current} onChange={onChange} total={products.count} />
+    <Space style={{display: products?.rows?.length > 0 ? "flex" : "none", justifyContent: "center"}}>
+      <Pagination current={current} onChange={onChange} total={products?.count} />
     </Space>);
 }

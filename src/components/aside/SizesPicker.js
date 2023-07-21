@@ -2,7 +2,7 @@ import { Space, Typography } from 'antd';
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import CheckableTag from "antd/es/tag/CheckableTag";
-import {getProductsRequest} from "../../redux/products/actions";
+import {changeFilterRequest} from "../../redux/products/actions";
 import {getSizesRequest} from "../../redux/sizes/actions";
 
 const {Text} = Typography;
@@ -22,7 +22,7 @@ export default function SizesPicker() {
     const nextSelectedTags = checked
       ? [...selectedTags, tag.id]
       : selectedTags.filter((t) => t !== tag.id);
-    dispatch(getProductsRequest({...filterState, size: [...nextSelectedTags]}))
+    dispatch(changeFilterRequest({...filterState, size: [...nextSelectedTags]}))
     setSelectedTags(nextSelectedTags);
   };
   return (

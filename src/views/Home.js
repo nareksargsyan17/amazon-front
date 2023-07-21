@@ -1,4 +1,3 @@
-import {HeaderBar} from "../components/header/HeaderBar";
 import {Layout, Space, theme, Typography} from "antd";
 import SortBar from "../components/aside/SortBar";
 import ColorsPicker from "../components/aside/ColorsPicker";
@@ -6,7 +5,6 @@ import SizesPicker from "../components/aside/SizesPicker";
 import {Products} from "../components/products/Products";
 import PaginationBar from "../components/products/PaginationBar";
 import React from "react";
-import {Footer} from "antd/es/layout/layout";
 
 const { Title } = Typography;
 
@@ -17,8 +15,6 @@ export  default function Home() {
     token: {colorBgContainer},
   } = theme.useToken();
   return <>
-    <Layout>
-      <HeaderBar/>
       <Content
         style={{
           padding: '0 50px',
@@ -56,14 +52,5 @@ export  default function Home() {
           </Content>
         </Layout>
       </Content>
-      <Footer
-        style={{
-          textAlign: 'center',
-        }}
-      >
-        Ant Design ©2023 Created by Ant UED
-      </Footer>
-    </Layout>
-
   </>
 }

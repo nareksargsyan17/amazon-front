@@ -13,7 +13,6 @@ function* getColors() {
       method: "get",
       url: "/guest/colors/get_all"
     })
-    console.log(response.data, "----colors-")
     if (response.status === 200) {
       yield put(getColorsSuccess(response.data.data));
     } else {

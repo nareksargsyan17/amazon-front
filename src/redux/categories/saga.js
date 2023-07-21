@@ -13,7 +13,6 @@ function* getCategories() {
       method: "get",
       url: "/guest/categories/get_all"
     })
-    console.log(response.data)
     if (response.status === 200) {
       yield put(getCategoriesSuccess(response.data.data));
     } else {

@@ -1,47 +1,64 @@
-import {Space, Spin, Typography} from "antd";
+import {Empty, notification, Skeleton, Space } from "antd";
 import Meta from "antd/es/card/Meta";
 import Card from "antd/es/card/Card";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux"
-import {getProductsRequest} from "../../redux/products/actions";
-import {LoadingOutlined} from "@ant-design/icons";
+import {getProductRequest, getProductsRequest} from "../../redux/products/actions";
+import {useNavigate} from 'react-router-dom';
+import {usePrevious} from "../../usePrevious/usePrevious";
 
-const { Title } = Typography;
 
 export function Products() {
   const dispatch = useDispatch();
-  const {products, isGetProductsRequest, filterState} = useSelector((state) => state.products);
-  console.log(products)
-  useEffect(() => {
-    dispatch(getProductsRequest({...filterState, id: "all", sortDirection: "ASC"}));
-  }, [dispatch]);
+  const navigate = useNavigate();
+  const {
+    products,
+    isGetProductsRequest,
+    isGetProductsFailure,
+    filterState,
+    errorMessage
+  } = useSelector((state) => state.products);
 
-  const antIcon = (
-    <LoadingOutlined
-      style={{
-        fontSize: 24,
-      }}
-      spin
-    />
-  );
+  const prevIsGetProductsFailure = usePrevious(isGetProductsFailure)
+
+  useEffect(() => {
+    dispatch(getProductsRequest({...filterState}));
+  }, [dispatch, filterState]);
+
+  useEffect(() => {
+    if (isGetProductsFailure && prevIsGetProductsFailure === false) {
+      notification["error"]({
+        duration: 7,
+        description: errorMessage
+      })
+    }
+  }, [isGetProductsFailure, errorMessage, prevIsGetProductsFailure])
+
 
   return (
-    <Space wrap>
-      {
-        !isGetProductsRequest ? products.rows?.length > 0 ?
+    <Skeleton active loading={isGetProductsRequest}>
+      <Space wrap>
+        {
+          products?.rows?.length > 0 ?
             (products.rows.map((elem) => <Card
-              key={elem.id}
-              hoverable
-              size="large"
-              style={{width: "260px", marginBottom: "30px"}}
-              cover={<img alt="example" src={`http://localhost:3001/${elem.images[0].path}`}/>}
-            >
-              <Meta title={elem.name} description={elem.brand}/>
-              <Meta title={elem.price}/>
-            </Card>)) :
-            (<Title type="danger" level={5} >There is not found Products!!</Title>) :
-          <Spin indicator={antIcon}/>
-      }
-    </Space>
+                key={elem.id}
+                hoverable
+                size="large"
+                style={{width: "260px", marginBottom: "30px"}}
+                cover={<img alt="example" src={`http://localhost:3001/${elem.images[0].path}`}/>}
+                onClick={() => {
+                  dispatch(getProductRequest({productId: elem.id}));
+                  navigate("/" + elem.id)
+                }}
+              >
+                <Meta title={elem.name} description={elem.brand}/>
+                <Meta title={elem.price}/>
+              </Card>)
+            ) : (
+              <Empty/>
+            )
+        }
+      </Space>
+    </Skeleton>
   )
 }

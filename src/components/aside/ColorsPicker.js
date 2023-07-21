@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {getColorsRequest} from "../../redux/colors/actions";
 import CheckableTag from "antd/es/tag/CheckableTag";
-import {getProductsRequest} from "../../redux/products/actions";
+import { changeFilterRequest } from "../../redux/products/actions";
 
 const {Text} = Typography;
 
@@ -22,7 +22,7 @@ export default function ColorsPicker() {
     const nextSelectedTags = checked
       ? [...selectedTags, tag.id]
       : selectedTags.filter((t) => t !== tag.id);
-    dispatch(getProductsRequest({...filterState, color: [...nextSelectedTags]}))
+    dispatch(changeFilterRequest({...filterState, color: [...nextSelectedTags]}))
     setSelectedTags(nextSelectedTags);
   };
   return (

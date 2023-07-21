@@ -1,19 +1,15 @@
 import {
-  AutoComplete,
   Button,
-  Cascader,
   Checkbox,
-  Col,
   Form,
   Input,
-  InputNumber,
-  Row,
-  Select, Space,
+  Layout
 } from 'antd';
 import "../App.css";
 
-import React, { useState } from 'react';
-const { Option } = Select;
+import {Typography} from "antd";
+const { Title } = Typography;
+
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -40,6 +36,7 @@ const tailFormItemLayout = {
     },
     sm: {
       span: 16,
+      offset: 8
     },
   },
 };
@@ -49,26 +46,28 @@ const Registration = () => {
     console.log('Received values of form: ', values);
   };
 
+
   return (
-    <Space
-      style={{width: "100%", display:"flex", justifyContent:"center"}}
-    >
+    <Layout style={{display: "flex", justifyContent: "center", background:"white", alignItems:"center", height: "100%"}}>
       <Form
-        layout="vertical"
         {...formItemLayout}
         form={form}
         name="register"
         onFinish={onFinish}
-        className="registr-form"
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems:"center",
-          width: "500px",
-          background: "gray"
+          textAlign: "center",
+          width: "600px",
+          background: "transparent",
+          padding: "40px 100px 40px 0",
+          boxShadow: "1px 1px 10px 0px rgba(0,0,0,0.75)"
         }}
         scrollToFirstError
       >
+        <Form.Item
+          {...tailFormItemLayout}
+         >
+          <Title level={5}>Registration</Title>
+        </Form.Item>
         <Form.Item
           name="firstName"
           label="FirstName"
@@ -161,7 +160,8 @@ const Registration = () => {
           {...tailFormItemLayout}
         >
           <Checkbox>
-            I have read the <a href="">agreement</a>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+            I have read the <a href="#">agreement</a>
           </Checkbox>
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
@@ -170,7 +170,8 @@ const Registration = () => {
           </Button>
         </Form.Item>
       </Form>
-    </Space>
+    </Layout>
+
   );
 };
 export default Registration;
