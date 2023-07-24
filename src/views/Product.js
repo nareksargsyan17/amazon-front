@@ -1,10 +1,26 @@
 import {useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {getProductRequest} from "../redux/products/actions";
-import {useEffect} from "react";
-import {usePrevious} from "../usePrevious/usePrevious";
-import {Button, Layout, Result, Skeleton} from "antd";
-
+import {changeCartCountRequest, getProductRequest} from "../redux/products/actions";
+import {useEffect, useState} from "react";
+import {
+  Button,
+  Carousel,
+  Descriptions,
+  Image,
+  Layout,
+  Result,
+  Skeleton,
+  Typography,
+  notification,
+  Select,
+  Radio
+} from "antd";
+import {Content} from "antd/es/layout/layout";
+import Card from "antd/es/card/Card";
+import "../App.css"
+import {ShoppingCartOutlined} from "@ant-design/icons";
+import counter from "../counter/counter";
+const {Text} = Typography;
 
 export default function Product() {
   let { productId } = useParams();
@@ -12,27 +28,149 @@ export default function Product() {
   const {
     isGetProductFailure,
     isGetProductRequest,
+    isGetProductSuccess,
+    product
   } = useSelector(state => state.products);
+  const [count, setCount] = useState(1);
+  const [color, setColor] = useState("");
+  const [size, setSize] = useState("");
 
-  const prevIsGetProductFailure = usePrevious(isGetProductFailure);
-  
+
+
+  useEffect(() => {
+    if (isGetProductSuccess && product?.name) {
+      setColor(product.colors[0].color)
+      setSize(product.sizes[0].size)
+    }
+  }, [isGetProductSuccess, product?.name, product?.colors, product?.sizes])
 
   useEffect(() => {
     dispatch(getProductRequest({productId}));
   }, [dispatch, productId]);
 
-  useEffect(() => {
-   if(isGetProductFailure && prevIsGetProductFailure === false) {
-     // console.log('======')
-   }
-  }, [isGetProductFailure, prevIsGetProductFailure])
+  const onToCart = () => {
+    let productsInStorage = localStorage.getItem("products");
+    let savedProductsInStorage = localStorage.getItem("savedProducts");
+    const {id, brand, category, images, name, price } = product;
+    const image = images.find(img => img.isMain === true)
+    if (productsInStorage) {
+      productsInStorage = JSON.parse(productsInStorage);
+      savedProductsInStorage = JSON.parse(savedProductsInStorage)
+      if (!productsInStorage.find(elem => elem.id === product.id) && !savedProductsInStorage?.find(elem => elem.id === product.id)){
+        productsInStorage.push({id, brand, category, color, size, image, name, price, ...{count}});
+        localStorage.setItem("products", JSON.stringify(productsInStorage));
+        dispatch(changeCartCountRequest(counter()));
+        notification["success"]({
+          duration: 3,
+          description: "This Product added in the Cart"
+        })
+      } else {
+        notification["warning"]({
+          duration: 3,
+          description: "This Product already exists in the Cart"
+        });
+      }
+    } else {
+      localStorage.setItem("products", JSON.stringify([{id, brand, category, color, size, image, name, price, ...{count}}]));
+      dispatch(changeCartCountRequest(count));
+      notification["success"]({
+        duration: 3,
+        description: "This Product added in the Cart"
+      });
+    }
+
+  }
+
+  const contentStyle = {
+    textAlign: 'center',
+    minHeight: 120,
+    lineHeight: '120px',
+    color: '#fff',
+    backgroundColor: 'white',
+    display: "flex",
+    justifyContent: "center",
+    padding: "40px"
+  };
+
+
+  const images = () => {
+    const imagesArr = [];
+    imagesArr.push(product.images.find(elem => elem.isMain === true).path)
+    product.images.filter(elem => elem.isMain === false).forEach(image => {
+      imagesArr.push(image.path)
+    })
+    return imagesArr;
+  }
+
+  const handleChange = (value) => {
+    setCount(value)
+  };
+
+  const onSetSize = (e) => {
+    setSize(e.target.value)
+  }
+
+  const onSetColor = (e) => {
+    setColor(e.target.value)
+  }
 
   return (
-    <Layout style={{minHeight: "100%"}}>
+    <Layout style={{minHeight: "100%", padding: "0 50px"}}>
       <Skeleton active loading={isGetProductRequest}>
         {
-          !isGetProductFailure ? (
-            <div>{productId}</div>
+          !isGetProductFailure && product?.name ? (
+            <Content style={contentStyle}>
+              <Card title={product.name} bordered={true} style={{ maxWidth: 800 }}>
+                <Carousel effect="fade" dots={{className: "dots"}} style={{width: "100%", padding: "20px 0"}}>
+                  {
+                    images().map((imagePath, index) => <Image key={index}  width={300} src={`http://localhost:3001/${imagePath}`}/>)
+                  }
+                </Carousel>
+                <Descriptions title="Product Info" layout="vertical" bordered>
+                    <Descriptions.Item label="Product">{product.name}</Descriptions.Item>
+                    <Descriptions.Item label="Brand">{product.brand}</Descriptions.Item>
+                    <Descriptions.Item label="Price">${product.price}</Descriptions.Item>
+                    <Descriptions.Item label="Create time">{product.createdAt}</Descriptions.Item>
+                    <Descriptions.Item label="Created By">{product.owner.firstName + " " + product.owner.lastName}</Descriptions.Item>
+                    <Descriptions.Item label="Category">{product.category.name}</Descriptions.Item>
+                    <Descriptions.Item label="Colors" span={2}>{
+                          <Radio.Group onChange={onSetColor}  defaultValue={product.colors[0].color}>
+                            {product.colors.map((tag) => (
+                              <Radio.Button key={tag.id} value={tag.color} style={{backgroundColor: tag.color, width: "30px", height:" 30px", margin: "3px", borderRadius: "3px"}}></Radio.Button>
+                            ))}
+                          </Radio.Group>
+                    }</Descriptions.Item>
+                    <Descriptions.Item label="Sizes">
+                      <Radio.Group onChange={onSetSize}  defaultValue={product.sizes[0].size}>
+                        {product.sizes.map((tag) => (
+                          <Radio.Button  key={tag.id} value={tag.size}>{tag.size}</Radio.Button>
+                        ))}
+                      </Radio.Group>
+                    </Descriptions.Item>
+                  <Descriptions.Item label="Description">
+                    {product.description}
+                  </Descriptions.Item>
+                  </Descriptions>
+                <div style={{paddingTop : "20px", display: "flex", alignItems: "center", justifyContent: "center", gap: "20px"}}>
+                  <Text>Add to Cart:</Text>
+                  <Button type="default" onClick={onToCart}>
+                    <ShoppingCartOutlined style={{color: "#1677ff", fontSize: "25px", cursor: "pointer"}}/>
+                  </Button>
+                  <Text>Count:</Text>
+                  <Select
+                    defaultValue="1"
+                    style={{ width: 50 }}
+                    onChange={handleChange}
+                    options={[
+                      { value: 1, label: 1 },
+                      { value: 2, label: 2 },
+                      { value: 3, label: 3 },
+                      { value: 4, label: 4 },
+                    ]}
+                  />
+                </div>
+              </Card>
+            </Content>
           ) : (
             <Result
               status="404"

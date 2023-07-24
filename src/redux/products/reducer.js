@@ -6,8 +6,9 @@ import {
   getProductFailure,
   getProductSuccess,
   getProductRequest,
-  changeFilterRequest,
+  changeFilterRequest, changeCartCountRequest,
 } from './actions'
+import counter from "../../counter/counter";
 
 const defaultState = {
   isGetProductsRequest: false,
@@ -17,6 +18,7 @@ const defaultState = {
   isGetProductSuccess: false,
   isGetProductFailure: false,
   product: {},
+  cartCount: counter(),
   filterState: {id : "all", page: 1, limit: 10, sortDirection : "DESC", sortWith : "id", searchBy: "", color: [], size: []},
   products: {
     rows: []
@@ -26,6 +28,13 @@ const defaultState = {
 
 const reducer = handleActions(
   {
+    [changeCartCountRequest]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      cartCount: payload
+    }),
     [changeFilterRequest]: (
       state,
       { payload }

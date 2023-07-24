@@ -48,7 +48,7 @@ const Registration = () => {
 
 
   return (
-    <Layout style={{display: "flex", justifyContent: "center", background:"white", alignItems:"center", height: "100%"}}>
+    <Layout style={{display: "flex", justifyContent: "center", background:"white", alignItems:"center", height: "100%", margin: "0 50px"}}>
       <Form
         {...formItemLayout}
         form={form}
@@ -66,7 +66,7 @@ const Registration = () => {
         <Form.Item
           {...tailFormItemLayout}
          >
-          <Title level={5}>Registration</Title>
+          <Title>Registration</Title>
         </Form.Item>
         <Form.Item
           name="firstName"

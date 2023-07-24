@@ -52,7 +52,7 @@ export function Products() {
                 }}
               >
                 <Meta title={elem.name} description={elem.brand}/>
-                <Meta title={elem.price}/>
+                <Meta title={"$"+elem.price}/>
               </Card>)
             ) : (
               <Empty/>

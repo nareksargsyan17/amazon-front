@@ -1,3 +1,10 @@
-.registr-form {
-    background-color: black;
+.slick-active {
+    background-color: rgba(77, 77, 77, 0.27);
+}
+
+.cart .ant-card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
 }

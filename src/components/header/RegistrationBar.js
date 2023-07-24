@@ -8,10 +8,13 @@ export function RegistrationBar() {
       navigate("/signup");
   }
 
+  const onSignIn = () => {
+    navigate("/signin");
+  }
 
   return (
     <Space wrap>
-      <Button type="text" style={{color: "white"}}>Sign In</Button>
+      <Button type="text" style={{color: "white"}} onClick={onSignIn}>Sign In</Button>
       <Button type="text" style={{color: "white"}} onClick={onSignup}>Sign Up</Button>
     </Space>
   )

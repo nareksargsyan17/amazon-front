@@ -24,9 +24,9 @@ export function HeaderBar() {
             <Image src="logo.png" preview={false} width={50} style={{ cursor: "pointer" }} onClick={onRouteHome}/>
           </Space>
           <SearchBar />
-          <Space align="center">
+          <Space align="center" style={{height: "100%", position: "relative"}}>
             <RegistrationBar/>
-            <ShopingCart/>
+            <ShopingCart />
           </Space>
         </Header>
     )
