@@ -1,10 +1,10 @@
 import Search from "antd/es/input/Search";
-import {useSelector, useDispatch} from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { changeFilterRequest } from "../../redux/products/actions";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export function SearchBar() {
-  const { filterState } = useSelector((state) => state.products);
+  const {filterState} = useSelector((state) => state.products);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -13,6 +13,6 @@ export function SearchBar() {
     navigate("/");
   };
   return (
-    <Search placeholder="Search Products" onSearch={onSearch} style={{ width: 300 }} />
+    <Search placeholder="Search Products" onSearch={onSearch} style={{width: 300}}/>
   )
 }

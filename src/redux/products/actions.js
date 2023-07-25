@@ -9,4 +9,9 @@ export const changeFilterRequest = createAction("CHANGE_FILTER_REQUEST")
 export const getProductRequest = createAction("GET_PRODUCT_REQUEST")
 export const getProductSuccess = createAction("GET_PRODUCT_SUCCESS")
 export const getProductFailure = createAction("GET_PRODUCT_FAILURE")
+
 export const changeCartCountRequest = createAction("CHANGE_CART_COUNT_REQUEST")
+
+export const getCartsProductsRequest = createAction("GET_CARTS_PRODUCTS_REQUEST")
+export const getCartsProductsSuccess = createAction("GET_CARTS_PRODUCTS_SUCCESS")
+export const getCartsProductsFailure = createAction("GET_CARTS_PRODUCTS_FAILURE")

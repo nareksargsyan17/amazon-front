@@ -6,7 +6,11 @@ import {
   getProductFailure,
   getProductSuccess,
   getProductRequest,
-  changeFilterRequest, changeCartCountRequest,
+  changeFilterRequest,
+  changeCartCountRequest,
+  getCartsProductsRequest,
+  getCartsProductsSuccess,
+  getCartsProductsFailure,
 } from './actions'
 import counter from "../../counter/counter";
 
@@ -17,12 +21,16 @@ const defaultState = {
   isGetProductRequest: false,
   isGetProductSuccess: false,
   isGetProductFailure: false,
+  isGetCartsProductRequest: false,
+  isGetCartsProductSuccess: false,
+  isGetCartsProductFailure: false,
   product: {},
   cartCount: counter(),
   filterState: {id : "all", page: 1, limit: 10, sortDirection : "DESC", sortWith : "id", searchBy: "", color: [], size: []},
   products: {
     rows: []
   },
+  cartsProducts: {},
   errorMessage: '',
 }
 
@@ -95,6 +103,34 @@ const reducer = handleActions(
       isGetProductRequest: false,
       isGetProductSuccess: false,
       isGetProductFailure: true,
+      errorMessage: payload
+    }),
+    [getCartsProductsRequest]: (
+      state,
+    ) => ({
+      ...state,
+      isGetCartsProductRequest: true,
+      isGetCartsProductSuccess: false,
+      isGetCartsProductFailure: false,
+    }),
+    [getCartsProductsSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isGetCartsProductRequest: false,
+      isGetCartsProductSuccess: true,
+      isGetCartsProductFailure: false,
+      cartsProducts: payload,
+    }),
+    [getCartsProductsFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isGetCartsProductRequest: false,
+      isGetCartsProductSuccess: false,
+      isGetCartsProductFailure: true,
       errorMessage: payload
     }),
   },

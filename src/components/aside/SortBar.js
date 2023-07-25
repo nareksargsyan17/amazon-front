@@ -1,6 +1,6 @@
-import {Select, Space, Typography} from 'antd';
-import {useDispatch, useSelector} from "react-redux";
-import {changeFilterRequest} from "../../redux/products/actions";
+import { Select, Space, Typography } from 'antd';
+import { useDispatch, useSelector } from "react-redux";
+import { changeFilterRequest } from "../../redux/products/actions";
 const { Text } = Typography;
 
 
@@ -10,7 +10,6 @@ export default function SortBar() {
 
   const handleChange = (value) => {
     value = JSON.parse(value);
-    console.log(value)
     dispatch(changeFilterRequest({...filterState, ...value}));
   };
   return <>

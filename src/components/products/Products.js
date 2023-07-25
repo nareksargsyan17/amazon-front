@@ -1,11 +1,11 @@
-import {Empty, notification, Skeleton, Space } from "antd";
+import { Empty, notification, Skeleton, Space } from "antd";
 import Meta from "antd/es/card/Meta";
 import Card from "antd/es/card/Card";
 import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux"
-import {getProductRequest, getProductsRequest} from "../../redux/products/actions";
-import {useNavigate} from 'react-router-dom';
-import {usePrevious} from "../../usePrevious/usePrevious";
+import { useDispatch, useSelector } from "react-redux";
+import { getProductRequest, getProductsRequest } from "../../redux/products/actions";
+import { useNavigate } from 'react-router-dom';
+import { usePrevious } from "../../usePrevious/usePrevious";
 
 
 export function Products() {
@@ -19,7 +19,7 @@ export function Products() {
     errorMessage
   } = useSelector((state) => state.products);
 
-  const prevIsGetProductsFailure = usePrevious(isGetProductsFailure)
+  const prevIsGetProductsFailure = usePrevious(isGetProductsFailure);
 
   useEffect(() => {
     dispatch(getProductsRequest({...filterState}));
@@ -32,7 +32,7 @@ export function Products() {
         description: errorMessage
       })
     }
-  }, [isGetProductsFailure, errorMessage, prevIsGetProductsFailure])
+  }, [isGetProductsFailure, errorMessage, prevIsGetProductsFailure]);
 
 
   return (
@@ -52,7 +52,7 @@ export function Products() {
                 }}
               >
                 <Meta title={elem.name} description={elem.brand}/>
-                <Meta title={"$"+elem.price}/>
+                <Meta title={"$" + elem.price}/>
               </Card>)
             ) : (
               <Empty/>

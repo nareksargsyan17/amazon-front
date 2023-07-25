@@ -13,8 +13,8 @@ export default function SizesPicker() {
   const { filterState } = useSelector((state) => state.products);
 
   useEffect(() => {
-    dispatch(getSizesRequest())
-  }, [dispatch])
+    dispatch(getSizesRequest());
+  }, [dispatch]);
 
 
   const [selectedTags, setSelectedTags] = useState([]);
@@ -22,7 +22,7 @@ export default function SizesPicker() {
     const nextSelectedTags = checked
       ? [...selectedTags, tag.id]
       : selectedTags.filter((t) => t !== tag.id);
-    dispatch(changeFilterRequest({...filterState, size: [...nextSelectedTags]}))
+    dispatch(changeFilterRequest({...filterState, size: [...nextSelectedTags]}));
     setSelectedTags(nextSelectedTags);
   };
   return (

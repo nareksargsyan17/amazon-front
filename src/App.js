@@ -13,6 +13,8 @@ import {HeaderBar} from "./components/header/HeaderBar";
 import Back from "./components/header/Back";
 import Cart from "./views/Cart";
 import SignIn from "./views/SignIn";
+import Verify from "./views/Verify";
+import ToHome from "./components/header/ToHome";
 const { Footer } = Layout;
 
 const App = () => {
@@ -25,9 +27,10 @@ const App = () => {
             <Route index element={<><HeaderBar/><Home/></>}/>
             <Route path=":productId" element={<><HeaderBar/><Back/><Product/></>}/>
           </Route>
-          <Route path="/signup" element={<><Back/><Registration/></>}/>
-          <Route path="/signin" element={<><Back/><SignIn/></>}/>
+          <Route path="/signup" element={<><ToHome/><Registration/></>}/>
+          <Route path="/signin" element={<><ToHome/><SignIn/></>}/>
           <Route path="/cart" element={<><HeaderBar/><Back/><Cart/></>}/>
+          <Route path="/verify/:userId/:token" element={<Verify/>} />
         </Routes>
         <Footer
           style={{

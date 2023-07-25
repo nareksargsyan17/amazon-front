@@ -1,9 +1,9 @@
-import {Button, Space} from "antd";
-import {LeftOutlined} from "@ant-design/icons";
-import {useNavigate} from "react-router-dom";
+import { Button, Space } from "antd";
+import { LeftOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 export default function Back() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const onBack = () => {
     navigate(-1);

@@ -1,16 +1,16 @@
-import {Button, Space} from "antd";
-import {useNavigate} from 'react-router-dom';
+import { Button, Space } from "antd";
+import { useNavigate } from 'react-router-dom';
 
 
 export function RegistrationBar() {
   const navigate = useNavigate();
   const onSignup = () => {
-      navigate("/signup");
-  }
+    navigate("/signup");
+  };
 
   const onSignIn = () => {
     navigate("/signin");
-  }
+  };
 
   return (
     <Space wrap>

@@ -1,11 +1,11 @@
 import { Space, Typography } from 'antd';
-import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useState} from "react";
-import {getColorsRequest} from "../../redux/colors/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { getColorsRequest } from "../../redux/colors/actions";
 import CheckableTag from "antd/es/tag/CheckableTag";
 import { changeFilterRequest } from "../../redux/products/actions";
 
-const {Text} = Typography;
+const { Text } = Typography;
 
 export default function ColorsPicker() {
   const dispatch = useDispatch();
@@ -13,8 +13,8 @@ export default function ColorsPicker() {
   const { filterState } = useSelector((state) => state.products);
   
   useEffect(() => {
-    dispatch(getColorsRequest())
-  }, [dispatch])
+    dispatch(getColorsRequest());
+  }, [dispatch]);
 
 
   const [selectedTags, setSelectedTags] = useState([]);
@@ -22,7 +22,7 @@ export default function ColorsPicker() {
     const nextSelectedTags = checked
       ? [...selectedTags, tag.id]
       : selectedTags.filter((t) => t !== tag.id);
-    dispatch(changeFilterRequest({...filterState, color: [...nextSelectedTags]}))
+    dispatch(changeFilterRequest({...filterState, color: [...nextSelectedTags]}));
     setSelectedTags(nextSelectedTags);
   };
   return (

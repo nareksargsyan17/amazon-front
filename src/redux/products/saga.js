@@ -2,7 +2,12 @@ import { put, takeEvery, takeLatest } from 'redux-saga/effects'
 import {
   getProductsRequest,
   getProductsSuccess,
-  getProductsFailure, getProductSuccess, getProductRequest, getProductFailure,
+  getProductsFailure,
+  getProductSuccess,
+  getProductRequest,
+  getProductFailure,
+  getCartsProductsSuccess,
+  getCartsProductsFailure, getCartsProductsRequest,
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
 
@@ -40,8 +45,27 @@ function* getProduct(action) {
   }
 }
 
+function* getCartsProducts(action) {
+  try {
+
+    const response = yield instance({
+      method: "post",
+      url: `/guest/products/get_cart_products`,
+      data: action.payload
+    })
+    if (response.status === 200) {
+      yield put(getCartsProductsSuccess(response.data.data))
+    } else {
+      yield put(getCartsProductsFailure(response.data.message))
+    }
+  } catch (e) {
+    yield put(getCartsProductsFailure(e.message))
+  }
+}
 
 export default function* productsSaga() {
   yield takeEvery(getProductsRequest, getProducts);
   yield takeLatest(getProductRequest, getProduct);
+  yield takeLatest(getCartsProductsRequest, getCartsProducts);
+
 }
