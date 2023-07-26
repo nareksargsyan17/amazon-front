@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getVerificationRequest } from "../redux/auth/actions";
+import {usePrevious} from "@react-hooks-library/core";
+import {postCartBulkRequest} from "../redux/cart/actions";
 
 export default function Verify() {
   const {userId, token} = useParams();
@@ -14,10 +16,17 @@ export default function Verify() {
     errorMessage
   } = useSelector(state => state.auth);
   const navigate = useNavigate();
+  const prevSuccess = usePrevious(isGetVerificationSuccess);
 
   useEffect(() => {
     dispatch(getVerificationRequest({id: userId, token}));
   }, [dispatch, token, userId]);
+  
+  useEffect(() => {
+    if (isGetVerificationSuccess && prevSuccess === false) {
+      dispatch(postCartBulkRequest({data: {products: (JSON.parse(localStorage.getItem("products")) || []), savedProducts: (JSON.parse(localStorage.getItem("savedProducts")) || []), userId}}))
+    }
+  }, [dispatch, isGetVerificationSuccess, prevSuccess, userId])
 
   return <Skeleton active loading={isGetVerificationRequest} style={{
     height: "100vh",

@@ -6,6 +6,7 @@ import { postLoginRequest } from "../redux/auth/actions";
 import { useNavigate } from "react-router-dom";
 import {useEffect} from "react";
 import { usePrevious } from "@react-hooks-library/core";
+import {postCartBulkRequest} from "../redux/cart/actions";
 const { Title } = Typography;
 
 export default function SignIn() {
@@ -15,12 +16,14 @@ export default function SignIn() {
     isPostLoginRequest,
     isPostLoginSuccess,
     isPostLoginFailure,
+    userData
   } = useSelector(state => state.auth)
   const prevSuccess = usePrevious(isPostLoginSuccess);
   const prevFailure = usePrevious(isPostLoginFailure);
 
   useEffect(() => {
     if (isPostLoginSuccess && prevSuccess === false) {
+      localStorage.setItem("token", userData.token);
       navigate("/");
     }
     if (isPostLoginFailure && prevFailure === false) {
@@ -29,7 +32,7 @@ export default function SignIn() {
         description: "Email or Password is not correct"
       });
     }
-  }, [isPostLoginFailure, isPostLoginSuccess, navigate, prevFailure, prevSuccess]);
+  }, [dispatch, isPostLoginFailure, isPostLoginSuccess, navigate, prevFailure, prevSuccess, userData.token]);
 
   const onFinish = (values) => {
     console.log('Received values of form: ', values);

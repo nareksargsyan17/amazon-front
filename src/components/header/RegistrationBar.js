@@ -1,5 +1,5 @@
-import { Button, Space } from "antd";
-import { useNavigate } from 'react-router-dom';
+import {Button, Space} from "antd";
+import {useNavigate} from 'react-router-dom';
 
 
 export function RegistrationBar() {
@@ -12,7 +12,17 @@ export function RegistrationBar() {
     navigate("/signin");
   };
 
-  return (
+  const onSignOut = () => {
+    localStorage.removeItem("token");
+
+    navigate("/")
+  }
+
+  return localStorage.getItem("token") ? (
+    <Space wrap>
+      <Button type="text" style={{color: "white"}} onClick={onSignOut}>Sign Out</Button>
+    </Space>
+    ) : (
     <Space wrap>
       <Button type="text" style={{color: "white"}} onClick={onSignIn}>Sign In</Button>
       <Button type="text" style={{color: "white"}} onClick={onSignup}>Sign Up</Button>

@@ -19,6 +19,7 @@ import Card from "antd/es/card/Card";
 import "../App.css"
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import counter from "../counter/counter";
+import {postCartRequest} from "../redux/cart/actions";
 
 const { Content } = Layout;
 const { Text } = Typography;
@@ -55,8 +56,11 @@ export default function Product() {
       productsInStorage = JSON.parse(productsInStorage);
       savedProductsInStorage = JSON.parse(savedProductsInStorage);
       if (!productsInStorage.find(elem => elem.id === product.id) && !savedProductsInStorage?.find(elem => elem.id === product.id)) {
-        productsInStorage.push({id, color, size, ...{count}});
+        productsInStorage.push({id, color, size, count});
         localStorage.setItem("products", JSON.stringify(productsInStorage));
+        if (localStorage.getItem("token")) {
+          dispatch(postCartRequest({data: {id, color, size, count}, token: localStorage.getItem("token")}))
+        }
         dispatch(changeCartCountRequest(counter()));
         notification["success"]({
           duration: 3,
@@ -69,6 +73,9 @@ export default function Product() {
         });
       }
     } else {
+      if (localStorage.getItem("token")) {
+        dispatch(postCartRequest({data: {id, color, size, count}, token: localStorage.getItem("token")}))
+      }
       localStorage.setItem("products", JSON.stringify([{
         id,
         color,
