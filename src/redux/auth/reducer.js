@@ -8,7 +8,7 @@ import {
   getVerificationFailure,
   postLoginRequest,
   postLoginSuccess,
-  postLoginFailure
+  postLoginFailure, changePasswordRequest, changePasswordSuccess, changePasswordFailure
 } from './actions'
 
 const defaultState = {
@@ -21,6 +21,9 @@ const defaultState = {
   isPostLoginRequest: false,
   isPostLoginSuccess: false,
   isPostLoginFailure: false,
+  isChangePasswordRequest: false,
+  isChangePasswordSuccess: false,
+  isChangePasswordFailure: false,
   userData: {},
   successMessage: "",
   errorMessage: '',
@@ -60,7 +63,7 @@ const reducer = handleActions(
       state
     ) => ({
       ...state,
-      isGetCategoriesRequest: true,
+      isGetVerificationRequest: true,
       isGetVerificationSuccess: false,
       isGetVerificationFailure: false,
     }),
@@ -69,7 +72,7 @@ const reducer = handleActions(
       { payload },
     ) => ({
       ...state,
-      isGetCategoriesRequest: false,
+      isGetVerificationRequest: false,
       isGetVerificationSuccess: true,
       isGetVerificationFailure: false,
       successMessage: payload,
@@ -79,7 +82,7 @@ const reducer = handleActions(
       { payload }
     ) => ({
       ...state,
-      isGetCategoriesRequest: false,
+      isGetVerificationRequest: false,
       isGetVerificationSuccess: false,
       isGetVerificationFailure: true,
       errorMessage: payload
@@ -110,6 +113,34 @@ const reducer = handleActions(
       isPostLoginRequest: false,
       isPostLoginSuccess: false,
       isPostLoginFailure: true,
+      errorMessage: payload
+    }),
+    [changePasswordRequest]: (
+      state
+    ) => ({
+      ...state,
+      isChangePasswordRequest: true,
+      isChangePasswordSuccess: false,
+      isChangePasswordFailure: false,
+    }),
+    [changePasswordSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isChangePasswordRequest: false,
+      isChangePasswordSuccess: true,
+      isChangePasswordFailure: false,
+      successMessage: payload,
+    }),
+    [changePasswordFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isChangePasswordRequest: false,
+      isChangePasswordSuccess: false,
+      isChangePasswordFailure: true,
       errorMessage: payload
     }),
   },

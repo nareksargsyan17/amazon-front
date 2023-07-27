@@ -20,6 +20,7 @@ import "../App.css"
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import counter from "../counter/counter";
 import {postCartRequest} from "../redux/cart/actions";
+import {usePrevious} from "../usePrevious/usePrevious";
 
 const { Content } = Layout;
 const { Text } = Typography;
@@ -31,11 +32,19 @@ export default function Product() {
     isGetProductFailure,
     isGetProductRequest,
     isGetProductSuccess,
+    cartCount,
     product
   } = useSelector(state => state.products);
+  const {
+    isPostCartRequest,
+    isPostCartSuccess,
+    isPostCartFailure
+  } = useSelector(state => state.cart);
   const [count, setCount] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
+  const prevSuccess = usePrevious(isPostCartSuccess);
+  const prevFailure = usePrevious(isPostCartFailure);
 
   useEffect(() => {
     if (isGetProductSuccess && product?.name) {
@@ -46,49 +55,64 @@ export default function Product() {
 
   useEffect(() => {
     dispatch(getProductRequest({productId}));
-  }, [dispatch, productId]);
-
-  const onToCart = () => {
-    let productsInStorage = localStorage.getItem("products");
-    let savedProductsInStorage = localStorage.getItem("savedProducts");
-    const { id } = product;
-    if (productsInStorage) {
-      productsInStorage = JSON.parse(productsInStorage);
-      savedProductsInStorage = JSON.parse(savedProductsInStorage);
-      if (!productsInStorage.find(elem => elem.id === product.id) && !savedProductsInStorage?.find(elem => elem.id === product.id)) {
-        productsInStorage.push({id, color, size, count});
-        localStorage.setItem("products", JSON.stringify(productsInStorage));
-        if (localStorage.getItem("token")) {
-          dispatch(postCartRequest({data: {id, color, size, count}, token: localStorage.getItem("token")}))
-        }
-        dispatch(changeCartCountRequest(counter()));
-        notification["success"]({
-          duration: 3,
-          description: "This Product added in the Cart"
-        })
-      } else {
-        notification["warning"]({
-          duration: 3,
-          description: "This Product already exists in the Cart"
-        });
-      }
-    } else {
-      if (localStorage.getItem("token")) {
-        dispatch(postCartRequest({data: {id, color, size, count}, token: localStorage.getItem("token")}))
-      }
-      localStorage.setItem("products", JSON.stringify([{
-        id,
-        color,
-        size,
-        ...{count}
-      }]));
-      dispatch(changeCartCountRequest(count));
+    if (isPostCartSuccess && prevSuccess === false) {
       notification["success"]({
         duration: 3,
         description: "This Product added in the Cart"
+      })
+    } else if (isPostCartFailure && prevFailure === false) {
+      notification["warning"]({
+        duration: 3,
+        description: "This Product already exists in the Cart"
       });
     }
+  }, [dispatch, isPostCartFailure, isPostCartSuccess, prevFailure, prevSuccess, productId]);
 
+  const onToCart = () => {
+    const { id } = product;
+    if (localStorage.getItem("token")) {
+      dispatch(postCartRequest({data: {id, color, size, count}, token: localStorage.getItem("token")}))
+      dispatch(changeCartCountRequest(cartCount + count));
+    } else {
+      let productsInStorage = localStorage.getItem("products");
+      let savedProductsInStorage = localStorage.getItem("savedProducts");
+      if (productsInStorage) {
+        productsInStorage = JSON.parse(productsInStorage);
+        savedProductsInStorage = JSON.parse(savedProductsInStorage);
+        if (!productsInStorage.find(elem => elem.id === product.id) && !savedProductsInStorage?.find(elem => elem.id === product.id)) {
+          productsInStorage.push({id, color, size, count});
+          localStorage.setItem("products", JSON.stringify(productsInStorage));
+          if (localStorage.getItem("token")) {
+
+          }
+          dispatch(changeCartCountRequest(counter()));
+          notification["success"]({
+            duration: 3,
+            description: "This Product added in the Cart"
+          })
+        } else {
+          notification["warning"]({
+            duration: 3,
+            description: "This Product already exists in the Cart"
+          });
+        }
+      } else {
+        if (localStorage.getItem("token")) {
+          dispatch(postCartRequest({data: {id, color, size, count}, token: localStorage.getItem("token")}))
+        }
+        localStorage.setItem("products", JSON.stringify([{
+          id,
+          color,
+          size,
+          ...{count}
+        }]));
+        dispatch(changeCartCountRequest(count));
+        notification["success"]({
+          duration: 3,
+          description: "This Product added in the Cart"
+        });
+      }
+    }
   }
 
   const contentStyle = {

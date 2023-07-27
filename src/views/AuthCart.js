@@ -1,30 +1,39 @@
 import {Button, Card, Empty, Image, Layout, Popconfirm, Select, Skeleton, Space, Typography} from "antd";
 import "../App.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {changeCartCountRequest, getCartsProductsRequest} from "../redux/products/actions";
-import counter from "../counter/counter";
 import { useNavigate } from "react-router-dom";
 import {QuestionCircleOutlined} from "@ant-design/icons";
+import {deleteCartRequest, getCartRequest, updateCartRequest} from "../redux/cart/actions";
+import {usePrevious} from "../usePrevious/usePrevious";
 
 const { Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 const { Meta } = Card
 
-export default function Cart() {
-  const [cartProducts, setProducts] = useState(JSON.parse(localStorage.getItem("products")) || []);
-  const [savedCartsProducts, setSavedProducts] = useState(JSON.parse(localStorage.getItem("savedProducts")) || []);
+export default function AuthCart() {
   const dispatch = useDispatch();
-  const {cartCount, cartsProducts, isGetCartsProductRequest} = useSelector(state => state.products);
+  const {cartCount, isGetCartsProductRequest} = useSelector(state => state.products);
+  const {cartsData, isUpdateCartSuccess, isDeleteCartSuccess} = useSelector(state => state.cart);
   const navigate = useNavigate();
+  const prevUpdateSuccess = usePrevious(isUpdateCartSuccess);
+  const prevDeleteSuccess = usePrevious(isDeleteCartSuccess);
 
   useEffect(() => {
-    dispatch(getCartsProductsRequest({products: cartProducts, savedProducts: savedCartsProducts}))
-    dispatch(changeCartCountRequest(cartCount));
-  }, [cartCount, cartProducts, dispatch, savedCartsProducts]);
+    dispatch(getCartRequest(localStorage.getItem("token")));
+  }, [cartCount, dispatch]);
+  
+  useEffect(() => {
+    if (isUpdateCartSuccess && prevUpdateSuccess === false) {
+      dispatch(getCartRequest(localStorage.getItem("token")));
+    }
+    if (isDeleteCartSuccess && prevDeleteSuccess === false) {
+      dispatch(getCartRequest(localStorage.getItem("token")));
+    }
+  }, [dispatch, isDeleteCartSuccess, isUpdateCartSuccess, prevDeleteSuccess, prevUpdateSuccess])
 
 
-  const {products, savedProducts} = cartsProducts;
+  const {products, savedProducts} = cartsData;
   const totalPrice = () => {
     let price = 0;
     let count = 0
@@ -35,14 +44,6 @@ export default function Cart() {
     return {price, count};
   };
 
-  const filteringForStorage = (productsArr) => {
-    return productsArr.map(product => ({
-      id: product.id,
-      count: product.count,
-      size: product.size,
-      color: product.color
-    }))
-  }
 
   return <Layout style={{padding: "0 50px"}}>
     <Skeleton active loading={isGetCartsProductRequest}>
@@ -79,40 +80,18 @@ export default function Cart() {
                         }}
                       />
                     }
-                    onConfirm={() => {
-                      const newProducts = products.filter(item => item.id !== product.id);
-                      setProducts(newProducts);
-                      localStorage.setItem("products", JSON.stringify(filteringForStorage(newProducts)));
-                      dispatch(changeCartCountRequest(counter()))}
-                    }
+                    onConfirm={() =>  dispatch(deleteCartRequest({id: product.id, token: localStorage.getItem("token")}))}
                   >
                     <Button danger >Delete</Button>
                   </Popconfirm>
                   <Button type="primary" onClick={
                     () => {
-                      const newSavedProduct = products.find(item => item.id === product.id);
-                      const newProducts = products.filter(item => item.id !== product.id);
-                      setSavedProducts([...savedProducts, newSavedProduct])
-                      localStorage.setItem("savedProducts", JSON.stringify(filteringForStorage([...savedProducts, newSavedProduct])));
-                      setProducts(newProducts);
-                      localStorage.setItem("products", JSON.stringify(filteringForStorage(newProducts)));
-                      dispatch(changeCartCountRequest(counter()))
+                      dispatch(updateCartRequest({id: product.id, data: {type: "saved"}, token: localStorage.getItem("token")}));
                     }
                   }>Save for Later</Button>
                   <Select
                     defaultValue={product.count}
-                    onChange={(value) => {
-                      const products = JSON.parse(localStorage.getItem("products"));
-                      const newProducts = products.map(item => {
-                        if (product.id === item.id) {
-                          item.count = value
-                        }
-                        return item
-                      });
-                      setProducts(newProducts);
-                      localStorage.setItem("products", JSON.stringify(filteringForStorage(newProducts)));
-                      dispatch(changeCartCountRequest(counter()))
-                    }}
+                    onChange={(value) => dispatch(updateCartRequest({id: product.id, data: {count: value}, token: localStorage.getItem("token")}))}
                     style={{width: 50}}
                     options={[
                       {value: 1, label: 1},
@@ -169,13 +148,7 @@ export default function Cart() {
                 <Text><b>Size: </b> {savedProduct.size}</Text>
                 <Button type="default" style={{width: "100%"}} onClick={
                   () => {
-                    const newProduct = savedProducts.find(item => item.id === savedProduct.id);
-                    const newSavedProducts = savedProducts.filter(item => item.id !== savedProduct.id);
-                    setSavedProducts(newSavedProducts)
-                    localStorage.setItem("savedProducts", JSON.stringify(filteringForStorage(newSavedProducts)));
-                    setProducts([...products, newProduct]);
-                    localStorage.setItem("products", JSON.stringify(filteringForStorage([...products, newProduct])));
-                    dispatch(changeCartCountRequest(counter()))
+                    dispatch(updateCartRequest({id: savedProduct.id, data: {type: "cart"}, token: localStorage.getItem("token")}))
                   }
                 }>Move To Cart</Button>
                 <Popconfirm
@@ -189,11 +162,7 @@ export default function Cart() {
                     />
                   }
                   onConfirm={
-                    () => {
-                      const newSavedProducts = savedProducts.filter(item => item.id !== savedProduct.id);
-                      setSavedProducts(newSavedProducts);
-                      localStorage.setItem("products", JSON.stringify(filteringForStorage(newSavedProducts)));
-                    }
+                    () => dispatch(deleteCartRequest({id: savedProduct.id, token: localStorage.getItem("token")}))
                   }
                 >
                   <Button danger >Delete</Button>

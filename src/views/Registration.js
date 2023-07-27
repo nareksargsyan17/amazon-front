@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { postRegistrationRequest } from "../redux/auth/actions";
 import { useEffect } from "react";
 import { usePrevious } from "@react-hooks-library/core";
+import {useNavigate} from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -59,17 +60,21 @@ const Registration = () => {
     isPostRegistrationFailure,
     errorMessage
   } = useSelector(state => state.auth);
+  const navigate = useNavigate()
   const prevSucces = usePrevious(isPostRegistrationSuccess);
   const prevFailure = usePrevious(isPostRegistrationFailure);
 
   useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
     if (isPostRegistrationFailure && prevFailure === false) {
       notification["error"]({
         duration: 3,
         description: errorMessage
       });
     }
-  }, [errorMessage, isPostRegistrationFailure, prevFailure]);
+  }, [errorMessage, isPostRegistrationFailure, navigate, prevFailure]);
 
   const onFinish = (values) => {
     const {agreement, confirm, ...data} = values;

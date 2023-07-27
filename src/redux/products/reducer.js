@@ -25,7 +25,7 @@ const defaultState = {
   isGetCartsProductSuccess: false,
   isGetCartsProductFailure: false,
   product: {},
-  cartCount: counter(),
+  cartCount: 0,
   filterState: {id : "all", page: 1, limit: 10, sortDirection : "DESC", sortWith : "id", searchBy: "", color: [], size: []},
   products: {
     rows: []

@@ -5,7 +5,35 @@ import { SearchBar } from "./SearchBar";
 import { RegistrationBar } from "./RegistrationBar";
 import { ShopingCart } from "./ShopingCart";
 import LogoImg from "./LogoImg";
+import Dropdown from "antd/es/dropdown/dropdown";
+import {UserOutlined} from "@ant-design/icons";
 
+const items = [
+  {
+    key: '1',
+    label: (
+      <a  href="/change">
+        change password
+      </a>
+    ),
+  },
+  {
+    key: '2',
+    label: (
+      <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+        2nd menu item
+      </a>
+    ),
+  },
+  {
+    key: '3',
+    label: (
+      <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+        3rd menu item
+      </a>
+    ),
+  },
+];
 export function HeaderBar() {
   return (
     <Header
@@ -23,6 +51,19 @@ export function HeaderBar() {
       <Space align="center" style={{height: "100%", position: "relative"}}>
         <RegistrationBar/>
         <ShopingCart/>
+        {
+          localStorage.getItem("token") ? (
+            <Dropdown
+              menu={{
+                items,
+              }}
+              placement="bottomLeft"
+              arrow
+            >
+              <UserOutlined style={{color: "white", fontSize: "25px", cursor: "pointer"}} />
+            </Dropdown>
+          ) : null
+        }
       </Space>
     </Header>
   )

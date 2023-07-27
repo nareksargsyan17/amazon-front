@@ -5,7 +5,13 @@ import {
   postCartBulkFailure,
   postCartRequest,
   postCartSuccess,
-  postCartFailure
+  postCartFailure,
+  getCartRequest,
+  getCartSuccess,
+  getCartFailure,
+  updateCartRequest,
+  updateCartSuccess,
+  updateCartFailure, deleteCartRequest, deleteCartSuccess, deleteCartFailure
 } from './actions'
 
 const defaultState = {
@@ -15,7 +21,16 @@ const defaultState = {
   isPostCartRequest: false,
   isPostCartSuccess: false,
   isPostCartFailure: false,
-  cartsData: [],
+  isGetCartRequest: false,
+  isGetCartSuccess: false,
+  isGetCartFailure: false,
+  isUpdateCartRequest: false,
+  isUpdateCartSuccess: false,
+  isUpdateCartFailure: false,
+  isDeleteCartRequest: false,
+  isDeleteCartSuccess: false,
+  isDeleteCartFailure: false,
+  cartsData: {},
   successMessage: "",
   errorMessage: '',
 }
@@ -76,6 +91,90 @@ const reducer = handleActions(
       isPostCartRequest: false,
       isPostCartSuccess: false,
       isPostCartFailure: true,
+      errorMessage: payload
+    }),
+    [getCartRequest]: (
+      state
+    ) => ({
+      ...state,
+      isGetCartRequest: true,
+      isGetCartSuccess: false,
+      isGetCartFailure: false,
+    }),
+    [getCartSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isGetCartRequest: false,
+      isGetCartSuccess: true,
+      isGetCartFailure: false,
+      cartsData: payload,
+    }),
+    [getCartFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isGetCartRequest: false,
+      isGetCartSuccess: false,
+      isGetCartFailure: true,
+      errorMessage: payload
+    }),
+    [updateCartRequest]: (
+      state
+    ) => ({
+      ...state,
+      isUpdateCartRequest: true,
+      isUpdateCartSuccess: false,
+      isUpdateCartFailure: false,
+    }),
+    [updateCartSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isUpdateCartRequest: false,
+      isUpdateCartSuccess: true,
+      isUpdateCartFailure: false,
+      successMessage: payload,
+    }),
+    [updateCartFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isUpdateCartRequest: false,
+      isUpdateCartSuccess: false,
+      isUpdateCartFailure: true,
+      errorMessage: payload
+    }),
+    [deleteCartRequest]: (
+      state
+    ) => ({
+      ...state,
+      isDeleteCartRequest: true,
+      isDeleteCartSuccess: false,
+      isDeleteCartFailure: false,
+    }),
+    [deleteCartSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isDeleteCartRequest: false,
+      isDeleteCartSuccess: true,
+      isDeleteCartFailure: false,
+      successMessage: payload,
+    }),
+    [deleteCartFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isDeleteCartRequest: false,
+      isDeleteCartSuccess: false,
+      isDeleteCartFailure: true,
       errorMessage: payload
     }),
   },

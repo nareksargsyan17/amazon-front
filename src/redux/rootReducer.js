@@ -6,6 +6,7 @@ import colors from "./colors/reducer";
 import sizes from "./sizes/reducer";
 import auth from "./auth/reducer";
 import cart from "./cart/reducer";
+import addresses from "./addresses/reducer";
 
 const rootReducer = combineReducers(
   {
@@ -14,7 +15,8 @@ const rootReducer = combineReducers(
     colors,
     sizes,
     auth,
-    cart
+    cart,
+    addresses
   }
 )
 

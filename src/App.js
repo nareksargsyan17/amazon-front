@@ -15,6 +15,9 @@ import Cart from "./views/Cart";
 import SignIn from "./views/SignIn";
 import Verify from "./views/Verify";
 import ToHome from "./components/header/ToHome";
+import AuthCart from "./views/AuthCart";
+import ChangePassword from "./views/ChangePassword";
+import Addresses from "./views/Addresses";
 const { Footer } = Layout;
 
 const App = () => {
@@ -29,6 +32,9 @@ const App = () => {
           </Route>
           <Route path="/signup" element={<><ToHome/><Registration/></>}/>
           <Route path="/signin" element={<><ToHome/><SignIn/></>}/>
+          <Route path="/change" element={<><ToHome/><ChangePassword/></>}/>
+          <Route path="/mycart" element={<><HeaderBar/><Back/><AuthCart/></>}/>
+          <Route path="/addresses" element={<><HeaderBar/><Back/><Addresses/></>}/>
           <Route path="/cart" element={<><HeaderBar/><Back/><Cart/></>}/>
           <Route path="/verify/:userId/:token" element={<Verify/>} />
         </Routes>

@@ -5,6 +5,7 @@ import colorsSaga from "./colors/saga";
 import sizesSaga from "./sizes/saga";
 import authSaga from "./auth/saga";
 import cartSaga from "./cart/saga";
+import addressesSaga from "./addresses/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -13,6 +14,7 @@ export default function* rootSaga() {
     colorsSaga(),
     sizesSaga(),
     authSaga(),
-    cartSaga()
+    cartSaga(),
+    addressesSaga()
   ])
 }

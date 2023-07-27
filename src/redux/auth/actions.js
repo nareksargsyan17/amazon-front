@@ -11,3 +11,7 @@ export const getVerificationFailure = createAction("GET_VERIFICATION_FAILURE")
 export const postLoginRequest = createAction("POST_LOGIN_REQUEST")
 export const postLoginSuccess = createAction("POST_LOGIN_SUCCESS")
 export const postLoginFailure = createAction("POST_LOGIN_FAILURE")
+
+export const changePasswordRequest = createAction("CHANGE_PASSWORD_REQUEST")
+export const changePasswordSuccess = createAction("CHANGE_PASSWORD_SUCCESS")
+export const changePasswordFailure = createAction("CHANGE_PASSWORD_FAILURE")

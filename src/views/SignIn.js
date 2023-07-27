@@ -22,6 +22,9 @@ export default function SignIn() {
   const prevFailure = usePrevious(isPostLoginFailure);
 
   useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
     if (isPostLoginSuccess && prevSuccess === false) {
       localStorage.setItem("token", userData.token);
       navigate("/");

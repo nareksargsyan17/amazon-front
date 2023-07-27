@@ -8,3 +8,10 @@
     align-items: flex-start;
     gap: 40px;
 }
+
+.address-radio> span:last-child {
+    width: 100%;
+    display: flex;
+    padding-left: 30px;
+    justify-content: space-between;
+}

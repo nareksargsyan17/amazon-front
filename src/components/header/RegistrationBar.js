@@ -1,9 +1,12 @@
 import {Button, Space} from "antd";
 import {useNavigate} from 'react-router-dom';
+import {useEffect} from "react";
 
 
 export function RegistrationBar() {
   const navigate = useNavigate();
+
+
   const onSignup = () => {
     navigate("/signup");
   };
@@ -13,9 +16,9 @@ export function RegistrationBar() {
   };
 
   const onSignOut = () => {
-    localStorage.removeItem("token");
-
-    navigate("/")
+    localStorage.clear();
+    navigate("/");
+    window.location.reload()
   }
 
   return localStorage.getItem("token") ? (
