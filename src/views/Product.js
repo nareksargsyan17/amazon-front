@@ -36,7 +36,6 @@ export default function Product() {
     product
   } = useSelector(state => state.products);
   const {
-    isPostCartRequest,
     isPostCartSuccess,
     isPostCartFailure
   } = useSelector(state => state.cart);
@@ -55,6 +54,9 @@ export default function Product() {
 
   useEffect(() => {
     dispatch(getProductRequest({productId}));
+  }, [dispatch, productId]);
+  
+  useEffect(() => {
     if (isPostCartSuccess && prevSuccess === false) {
       notification["success"]({
         duration: 3,
@@ -66,7 +68,7 @@ export default function Product() {
         description: "This Product already exists in the Cart"
       });
     }
-  }, [dispatch, isPostCartFailure, isPostCartSuccess, prevFailure, prevSuccess, productId]);
+  }, [isPostCartFailure, isPostCartSuccess, prevFailure, prevSuccess])
 
   const onToCart = () => {
     const { id } = product;

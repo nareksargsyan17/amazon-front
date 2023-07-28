@@ -10,9 +10,9 @@ export const getAddressesFailure = createAction("GET_ADDRESSES_FAILURE")
 
 export const checkAddressIsMain = createAction("CHECK_ADDRESS_IS_MAIN")
 
-export const postLoginRequest = createAction("POST_LOGIN_REQUEST")
-export const postLoginSuccess = createAction("POST_LOGIN_SUCCESS")
-export const postLoginFailure = createAction("POST_LOGIN_FAILURE")
+export const postAddressRequest = createAction("POST_ADDRESS_REQUEST")
+export const postAddressSuccess = createAction("POST_ADDRESS_SUCCESS")
+export const postAddressFailure = createAction("POST_ADDRESS_FAILURE")
 
 export const changeAddressRequest = createAction("CHANGE_ADDRESS_REQUEST")
 export const changeAddressSuccess = createAction("CHANGE_ADDRESS_SUCCESS")

@@ -33,7 +33,7 @@ export function ShopingCart() {
       })
       dispatch(changeCartCountRequest(count))
     }
-  }, [cartsData, dispatch, isGetCartSuccess, prevSucces])
+  }, [cartsData, dispatch, isGetCartSuccess, prevSucces, cartCount])
 
   const onToCart = () => {
     if (localStorage.getItem("token")) {

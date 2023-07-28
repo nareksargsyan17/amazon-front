@@ -9,7 +9,10 @@ import {
   changeAddressFailure,
   deleteAddressRequest,
   deleteAddressSuccess,
-  deleteAddressFailure
+  deleteAddressFailure,
+  postAddressRequest,
+  postAddressSuccess,
+  postAddressFailure
 } from './actions'
 
 const defaultState = {
@@ -19,9 +22,9 @@ const defaultState = {
   isGetAddressesRequest: false,
   isGetAddressesSuccess: false,
   isGetAddressesFailure: false,
-  isPostLoginRequest: false,
-  isPostLoginSuccess: false,
-  isPostLoginFailure: false,
+  isPostAddressRequest: false,
+  isPostAddressSuccess: false,
+  isPostAddressFailure: false,
   isChangeAddressRequest: false,
   isChangeAddressSuccess: false,
   isChangeAddressFailure: false,
@@ -33,6 +36,34 @@ const defaultState = {
 
 const reducer = handleActions(
   {
+    [postAddressRequest]: (
+      state
+    ) => ({
+      ...state,
+      isPostAddressRequest: true,
+      isPostAddressSuccess: false,
+      isPostAddressFailure: false,
+    }),
+    [postAddressSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isPostAddressRequest: false,
+      isPostAddressSuccess: true,
+      isPostAddressFailure: false,
+      addresses: [...state.addresses, payload],
+    }),
+    [postAddressFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isPostAddressRequest: false,
+      isPostAddressSuccess: false,
+      isPostAddressFailure: true,
+      errorMessage: payload
+    }),
     [getAddressesRequest]: (
       state
     ) => ({

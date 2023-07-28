@@ -85,6 +85,7 @@ function* updateCart (action) {
       },
       data: action.payload.data
     })
+    console.log(response.data)
     if (response.status === 200) {
       yield put(updateCartSuccess(response.data.data));
     } else {
@@ -94,6 +95,7 @@ function* updateCart (action) {
     yield put(updateCartFailure(error.message));
   }
 }
+
 function* deleteCart (action) {
   try {
     const response = yield instance({

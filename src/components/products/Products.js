@@ -3,7 +3,7 @@ import Meta from "antd/es/card/Meta";
 import Card from "antd/es/card/Card";
 import React, {useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProductRequest, getProductsRequest } from "../../redux/products/actions";
+import { getProductsRequest } from "../../redux/products/actions";
 import { useNavigate } from 'react-router-dom';
 import { usePrevious } from "../../usePrevious/usePrevious";
 
@@ -47,7 +47,6 @@ export function Products() {
                 style={{width: "260px", marginBottom: "30px"}}
                 cover={<img alt="example" src={`http://localhost:3001/${elem.images[0].path}`}/>}
                 onClick={() => {
-                  dispatch(getProductRequest({productId: elem.id}));
                   navigate("/" + elem.id)
                 }}
               >

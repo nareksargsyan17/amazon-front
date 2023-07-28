@@ -7,7 +7,11 @@ import {
   getProductRequest,
   getProductFailure,
   getCartsProductsSuccess,
-  getCartsProductsFailure, getCartsProductsRequest,
+  getCartsProductsFailure,
+  getCartsProductsRequest,
+  getUserProductsRequest,
+  getUserProductsSuccess,
+  getUserProductsFailure, postProductRequest,
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
 
@@ -25,6 +29,22 @@ function* getProducts(action) {
     }
   } catch (e) {
     yield put(getProductsFailure(e.message))
+  }
+}
+
+function* getUserProducts() {
+  try {
+    const response = yield instance({
+      method: "get",
+      url: `/user/products/get_all`
+    })
+    if (response.status === 200) {
+      yield put(getUserProductsSuccess(response.data.data))
+    } else {
+      yield put(getUserProductsFailure(response.data.message))
+    }
+  } catch (e) {
+    yield put(getUserProductsFailure(e.message))
   }
 }
 
@@ -63,9 +83,28 @@ function* getCartsProducts(action) {
   }
 }
 
+function* postProduct(action) {
+  try {
+    const response = yield instance({
+      method: "post",
+      url: `/user/products/add`,
+      data: action.payload
+    })
+    if (response.status === 200) {
+      yield put(getProductSuccess(response.data.successMessage))
+    } else {
+      yield put(getProductFailure(response.data.message))
+    }
+  } catch (error) {
+    yield put(getProductFailure(error.message))
+  }
+}
+
 export default function* productsSaga() {
   yield takeEvery(getProductsRequest, getProducts);
   yield takeLatest(getProductRequest, getProduct);
   yield takeLatest(getCartsProductsRequest, getCartsProducts);
+  yield takeLatest(getUserProductsRequest, getUserProducts);
+  yield takeLatest(postProductRequest, postProduct);
 
 }

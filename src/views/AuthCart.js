@@ -1,11 +1,12 @@
 import {Button, Card, Empty, Image, Layout, Popconfirm, Select, Skeleton, Space, Typography} from "antd";
 import "../App.css";
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {deleteCartRequest, getCartRequest, updateCartRequest} from "../redux/cart/actions";
 import {usePrevious} from "../usePrevious/usePrevious";
+import {changeCartCountRequest} from "../redux/products/actions";
 
 const { Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -14,26 +15,66 @@ const { Meta } = Card
 export default function AuthCart() {
   const dispatch = useDispatch();
   const {cartCount, isGetCartsProductRequest} = useSelector(state => state.products);
-  const {cartsData, isUpdateCartSuccess, isDeleteCartSuccess} = useSelector(state => state.cart);
+  const {cartsData, isUpdateCartSuccess, isDeleteCartSuccess,isGetCartSuccess, updatedCart, deletedCartId} = useSelector(state => state.cart);
+  const [cartArr, setCart] = useState(cartsData);
   const navigate = useNavigate();
   const prevUpdateSuccess = usePrevious(isUpdateCartSuccess);
   const prevDeleteSuccess = usePrevious(isDeleteCartSuccess);
+  const prevGetSuccess = usePrevious(isGetCartSuccess);
 
   useEffect(() => {
     dispatch(getCartRequest(localStorage.getItem("token")));
-  }, [cartCount, dispatch]);
+  }, [dispatch]);
   
   useEffect(() => {
+    if (isGetCartSuccess && prevGetSuccess === false) {
+      setCart(cartsData);
+    }
+    
     if (isUpdateCartSuccess && prevUpdateSuccess === false) {
-      dispatch(getCartRequest(localStorage.getItem("token")));
+      const newCartsData = {products: [], savedProducts: []};
+      const foundCart = cartArr.products.find(elem => elem.id === updatedCart.id);
+      const foundSavedCart = cartArr.savedProducts.find(elem => elem.id === updatedCart.id);
+      if (foundCart) {
+        if (updatedCart.type === "saved") {
+          newCartsData.products = cartArr.products.filter(elem => elem.id !== updatedCart.id);
+          cartArr.savedProducts.push(foundCart);
+          newCartsData.savedProducts = cartArr.savedProducts;
+          dispatch(changeCartCountRequest(cartCount - foundCart.count))
+        } else {
+          newCartsData.products = cartArr.products.map(elem => {
+            if (elem.id === updatedCart.id && elem.count !== updatedCart.count) {
+              dispatch(changeCartCountRequest(cartCount - elem.count + updatedCart.count))
+              elem.count = updatedCart.count;
+            }
+              return elem;
+          });
+        }
+      }
+      if (foundSavedCart){
+        newCartsData.savedProducts = cartArr.savedProducts.filter(elem => elem.id !== updatedCart.id);
+        cartArr.products.push(foundSavedCart);
+        newCartsData.products = cartArr.products;
+        dispatch(changeCartCountRequest(cartCount + foundSavedCart.count))
+
+      }
+      setCart(newCartsData);
+
     }
     if (isDeleteCartSuccess && prevDeleteSuccess === false) {
-      dispatch(getCartRequest(localStorage.getItem("token")));
+      const newCartsData = {products: [], savedProducts: []};
+      const deletedElem = cartArr.products.find(elem => elem.id === deletedCartId);
+      if (deletedElem) {
+        dispatch(changeCartCountRequest(cartCount - deletedElem.count));
+      }
+      newCartsData.products = cartArr.products.filter(elem => elem.id !== deletedCartId);
+      newCartsData.savedProducts = cartArr.savedProducts.filter(elem => elem.id !== deletedCartId);
+      setCart(newCartsData);
     }
-  }, [dispatch, isDeleteCartSuccess, isUpdateCartSuccess, prevDeleteSuccess, prevUpdateSuccess])
+  }, [cartArr, cartCount, cartsData, deletedCartId, dispatch, isDeleteCartSuccess, isGetCartSuccess, isUpdateCartSuccess, prevDeleteSuccess, prevGetSuccess, prevUpdateSuccess, updatedCart])
 
 
-  const {products, savedProducts} = cartsData;
+  const {products, savedProducts} = cartArr;
   const totalPrice = () => {
     let price = 0;
     let count = 0
@@ -65,7 +106,7 @@ export default function AuthCart() {
                          style={{cursor: "pointer"}}>Product: {product.name}</Title>
                   <Text><b>Brand: </b>{product.brand}</Text>
                   <Title level={5}>Price: ${product.price}</Title>
-                  <Text><b>Category: </b>{product.category.name}</Text>
+                  <Text><b>Category: </b>{product.category}</Text>
                   <Text><b>Size: </b>{product.size}</Text>
                   <Text><b>Color: </b>{product.color}</Text>
                 </Space>
@@ -143,7 +184,7 @@ export default function AuthCart() {
                 <Meta title={savedProduct.name} />
                 <Text>{savedProduct.brand}</Text>
                 <Text><b>Price: </b> ${savedProduct.price}</Text>
-                <Text><b>Category: </b>{savedProduct.category.name}</Text>
+                <Text><b>Category: </b>{savedProduct.category}</Text>
                 <Text><b>Color: </b> {savedProduct.color}</Text>
                 <Text><b>Size: </b> {savedProduct.size}</Text>
                 <Button type="default" style={{width: "100%"}} onClick={

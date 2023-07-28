@@ -18,6 +18,8 @@ import ToHome from "./components/header/ToHome";
 import AuthCart from "./views/AuthCart";
 import ChangePassword from "./views/ChangePassword";
 import Addresses from "./views/Addresses";
+import MyStore from "./views/MyStore";
+import ProductAdd from "./views/ProductAdd";
 const { Footer } = Layout;
 
 const App = () => {
@@ -35,6 +37,8 @@ const App = () => {
           <Route path="/change" element={<><ToHome/><ChangePassword/></>}/>
           <Route path="/mycart" element={<><HeaderBar/><Back/><AuthCart/></>}/>
           <Route path="/addresses" element={<><HeaderBar/><Back/><Addresses/></>}/>
+          <Route path="/mystore" element={<><HeaderBar/><Back/><MyStore/></>}/>
+          <Route path="/mystore/add" element={<><HeaderBar/><Back/><ProductAdd/></>}/>
           <Route path="/cart" element={<><HeaderBar/><Back/><Cart/></>}/>
           <Route path="/verify/:userId/:token" element={<Verify/>} />
         </Routes>

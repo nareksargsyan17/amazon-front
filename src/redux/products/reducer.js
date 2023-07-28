@@ -11,8 +11,12 @@ import {
   getCartsProductsRequest,
   getCartsProductsSuccess,
   getCartsProductsFailure,
+  getUserProductsRequest,
+  getUserProductsSuccess,
+  getUserProductsFailure,
+  postProductRequest,
+  postProductSuccess, postProductFailure,
 } from './actions'
-import counter from "../../counter/counter";
 
 const defaultState = {
   isGetProductsRequest: false,
@@ -24,6 +28,12 @@ const defaultState = {
   isGetCartsProductRequest: false,
   isGetCartsProductSuccess: false,
   isGetCartsProductFailure: false,
+  isGetUserProductsRequest: false,
+  isGetUserProductsSuccess: false,
+  isGetUserProductsFailure: false,
+  isPostProductRequest: false,
+  isPostProductSuccess: false,
+  isPostProductFailure: false,
   product: {},
   cartCount: 0,
   filterState: {id : "all", page: 1, limit: 10, sortDirection : "DESC", sortWith : "id", searchBy: "", color: [], size: []},
@@ -131,6 +141,62 @@ const reducer = handleActions(
       isGetCartsProductRequest: false,
       isGetCartsProductSuccess: false,
       isGetCartsProductFailure: true,
+      errorMessage: payload
+    }),
+    [getUserProductsRequest]: (
+      state,
+    ) => ({
+      ...state,
+      isGetUserProductsRequest: true,
+      isGetUserProductsSuccess: false,
+      isGetUserProductsFailure: false,
+    }),
+    [getUserProductsSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isGetUserProductsRequest: false,
+      isGetUserProductsSuccess: true,
+      isGetUserProductsFailure: false,
+      products: payload,
+    }),
+    [getUserProductsFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isGetUserProductsRequest: false,
+      isGetUserProductsSuccess: false,
+      isGetUserProductsFailure: true,
+      errorMessage: payload
+    }),
+    [postProductRequest]: (
+      state,
+    ) => ({
+      ...state,
+      isPostProductRequest: true,
+      isPostProductSuccess: false,
+      isPostProductFailure: false,
+    }),
+    [postProductSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isPostProductRequest: false,
+      isPostProductSuccess: true,
+      isPostProductFailure: false,
+      successMessage: payload,
+    }),
+    [postProductFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isPostProductRequest: false,
+      isPostProductSuccess: false,
+      isPostProductFailure: true,
       errorMessage: payload
     }),
   },

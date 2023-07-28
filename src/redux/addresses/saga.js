@@ -6,7 +6,7 @@ import {
   changeAddressFailure,
   changeAddressRequest,
   deleteAddressSuccess,
-  deleteAddressFailure, deleteAddressRequest
+  deleteAddressFailure, deleteAddressRequest, postAddressSuccess, postAddressFailure, postAddressRequest
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
 import {put, takeEvery} from "redux-saga/effects";
@@ -72,9 +72,31 @@ function* deleteAddress (action) {
   }
 }
 
+function* postAddress (action) {
+  try {
+    const response = yield instance({
+      method: "post",
+      url: "/user/addresses/add",
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + action.payload.token
+      },
+      data: action.payload.data
+    })
+    if (response.status === 200) {
+      yield put(postAddressSuccess(response.data.address));
+    } else {
+      yield put(postAddressFailure(response.data.message));
+    }
+  } catch (error) {
+    yield put(postAddressFailure(error.message));
+  }
+}
+
 export default function* addressesSaga() {
   yield takeEvery(getAddressesRequest, getAddresses);
   yield takeEvery(changeAddressRequest, changeAddressIsMain);
   yield takeEvery(deleteAddressRequest, deleteAddress);
+  yield takeEvery(postAddressRequest, postAddress);
 
 }
