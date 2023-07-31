@@ -25,3 +25,7 @@ export const getUserProductsFailure = createAction("GET_USER_PRODUCTS_FAILURE")
 export const postProductRequest = createAction("POST_PRODUCT_REQUEST")
 export const postProductSuccess = createAction("POST_PRODUCT_SUCCESS")
 export const postProductFailure = createAction("POST_PRODUCT_FAILURE")
+
+export const uploadProductRequest = createAction("UPLOAD_PRODUCT_REQUEST")
+export const uploadProductSuccess = createAction("UPLOAD_PRODUCT_SUCCESS")
+export const uploadProductFailure = createAction("UPLOAD_PRODUCT_FAILURE")

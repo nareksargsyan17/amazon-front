@@ -1,9 +1,11 @@
 import {Content} from "antd/es/layout/layout";
-import {Button, Form, Input, InputNumber, Select, Space, Switch, Typography, Radio} from "antd";
-import {useDispatch} from "react-redux";
-import {postProductRequest} from "../redux/products/actions";
+import {Button, Form, Input, InputNumber, Select, Space, Switch, Typography} from "antd";
+import {useDispatch, useSelector} from "react-redux";
 import Upload from "antd/es/upload/Upload";
 import {UploadOutlined} from "@ant-design/icons";
+import {postProductRequest, uploadProductRequest} from "../redux/products/actions";
+import {useEffect, useState} from "react";
+import {usePrevious} from "../usePrevious/usePrevious";
 const {Option} = Select;
 const {Title} = Typography
 
@@ -21,13 +23,21 @@ const normFile = (e) => {
 };
 
 export default function ProductAdd() {
-
+  const {isPostProductRequest, isPostProductSuccess, product} = useSelector(state => state.products);
   const dispatch = useDispatch();
+  const prevPostSuccess = usePrevious(isPostProductSuccess);
+  const [images, setImages] = useState();
 
+  useEffect(() => {
+    if (prevPostSuccess === false && isPostProductSuccess) {
+      dispatch(uploadProductRequest(JSON.stringify({data: images, id: product.id})))
+    }
+  }, [dispatch, isPostProductSuccess, prevPostSuccess, product])
 
   const onFinish = (values) => {
-    console.log(values)
-    // dispatch(postProductRequest(values))
+    const {main, gallery, ...data} = values
+    setImages({main, gallery});
+    dispatch(postProductRequest(data));
   }
 
   return (
@@ -108,9 +118,21 @@ export default function ProductAdd() {
           name="main"
           label="Main Image"
           valuePropName="fileList"
+          rules={[{ required: true, message: 'Please upload your Product Main Image!' }]}
           getValueFromEvent={normFile}
         >
-          <Upload name="logo" action="/upload.do" listType="picture">
+          <Upload name="logo" maxCount={1} action="/upload.do" listType="picture">
+            <Button icon={<UploadOutlined />}>Click to upload</Button>
+          </Upload>
+        </Form.Item>
+        <Form.Item
+          name="gallery"
+          label="Gallery Images"
+          valuePropName="fileList"
+          rules={[{ required: true, message: 'Please upload your Product Gallery Images!' }]}
+          getValueFromEvent={normFile}
+        >
+          <Upload name="logo" maxCount={4} action="/upload.do" listType="picture">
             <Button icon={<UploadOutlined />}>Click to upload</Button>
           </Upload>
         </Form.Item>

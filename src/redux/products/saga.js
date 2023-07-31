@@ -11,7 +11,7 @@ import {
   getCartsProductsRequest,
   getUserProductsRequest,
   getUserProductsSuccess,
-  getUserProductsFailure, postProductRequest,
+  getUserProductsFailure, postProductRequest, uploadProductRequest, postProductSuccess, postProductFailure,
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
 
@@ -91,6 +91,25 @@ function* postProduct(action) {
       data: action.payload
     })
     if (response.status === 200) {
+      yield put(postProductSuccess(response.data.data))
+    } else {
+      yield put(postProductFailure(response.data.message))
+    }
+  } catch (error) {
+    yield put(postProductFailure(error.message))
+  }
+}
+
+function* uploadImages(action) {
+  try {
+    let formData = new FormData()
+    const {data, id} = JSON.parse(action.payload)
+    console.log(data, id)
+    formData.append("main", JSON.stringify(data.main))
+    formData.append("gallery", JSON.stringify(data.gallery))
+    console.log(formData.values())
+    const response = yield instance.post(`/user/products/upload_images/${id}`, formData, )
+    if (response.status === 200) {
       yield put(getProductSuccess(response.data.successMessage))
     } else {
       yield put(getProductFailure(response.data.message))
@@ -106,5 +125,5 @@ export default function* productsSaga() {
   yield takeLatest(getCartsProductsRequest, getCartsProducts);
   yield takeLatest(getUserProductsRequest, getUserProducts);
   yield takeLatest(postProductRequest, postProduct);
-
+  yield takeLatest(uploadProductRequest, uploadImages);
 }

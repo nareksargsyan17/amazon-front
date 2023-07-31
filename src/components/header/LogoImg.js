@@ -7,5 +7,5 @@ export default function LogoImg() {
     navigate("/");
   };
 
-  return <Image src="logo.png" preview={false} width={50} style={{cursor: "pointer"}} onClick={onRouteHome}/>
+  return <Image src="http://localhost:3000/logo.png" preview={false} width={50} style={{cursor: "pointer"}} onClick={onRouteHome}/>
 }

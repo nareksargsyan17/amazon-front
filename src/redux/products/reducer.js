@@ -15,7 +15,9 @@ import {
   getUserProductsSuccess,
   getUserProductsFailure,
   postProductRequest,
-  postProductSuccess, postProductFailure,
+  postProductSuccess,
+  postProductFailure, uploadProductRequest, uploadProductSuccess, uploadProductFailure,
+
 } from './actions'
 
 const defaultState = {
@@ -34,6 +36,9 @@ const defaultState = {
   isPostProductRequest: false,
   isPostProductSuccess: false,
   isPostProductFailure: false,
+  isUploadProductRequest: false,
+  isUploadProductSuccess: false,
+  isUploadProductFailure: false,
   product: {},
   cartCount: 0,
   filterState: {id : "all", page: 1, limit: 10, sortDirection : "DESC", sortWith : "id", searchBy: "", color: [], size: []},
@@ -187,7 +192,7 @@ const reducer = handleActions(
       isPostProductRequest: false,
       isPostProductSuccess: true,
       isPostProductFailure: false,
-      successMessage: payload,
+      product: payload,
     }),
     [postProductFailure]: (
       state,
@@ -197,6 +202,34 @@ const reducer = handleActions(
       isPostProductRequest: false,
       isPostProductSuccess: false,
       isPostProductFailure: true,
+      errorMessage: payload
+    }),
+    [uploadProductRequest]: (
+      state,
+    ) => ({
+      ...state,
+      isUploadProductRequest: true,
+      isUploadProductSuccess: false,
+      isUploadProductFailure: false,
+    }),
+    [uploadProductSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isUploadProductRequest: false,
+      isUploadProductSuccess: true,
+      isUploadProductFailure: false,
+      successMessage: payload,
+    }),
+    [uploadProductFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isUploadProductRequest: false,
+      isUploadProductSuccess: false,
+      isUploadProductFailure: true,
       errorMessage: payload
     }),
   },
