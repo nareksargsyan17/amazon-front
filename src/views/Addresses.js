@@ -89,6 +89,7 @@ export default function Addresses() {
   };
   const handleOk = () => {
     dispatch(postAddressRequest({data: {address : addressInput}, token: localStorage.getItem("token")}));
+    setIsModalOpen(false)
   };
 
   return (

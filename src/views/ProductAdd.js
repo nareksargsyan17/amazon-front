@@ -1,11 +1,14 @@
 import {Content} from "antd/es/layout/layout";
-import {Button, Form, Input, InputNumber, Select, Space, Switch, Typography} from "antd";
+import {Button, Form, Input, InputNumber, notification, Select, Space, Switch, Typography} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import Upload from "antd/es/upload/Upload";
-import {UploadOutlined} from "@ant-design/icons";
+import {DownOutlined, UploadOutlined} from "@ant-design/icons";
 import {postProductRequest, uploadProductRequest} from "../redux/products/actions";
 import {useEffect, useState} from "react";
 import {usePrevious} from "../usePrevious/usePrevious";
+import Tree from "antd/es/tree/Tree";
+import {getColorsRequest} from "../redux/colors/actions";
+import {getSizesRequest} from "../redux/sizes/actions";
 const {Option} = Select;
 const {Title} = Typography
 
@@ -14,29 +17,64 @@ const formItemLayout = {
   wrapperCol: { span: 14 },
 };
 
-const normFile = (e) => {
-  console.log('Upload event:', e);
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
+
 
 export default function ProductAdd() {
-  const {isPostProductRequest, isPostProductSuccess, product} = useSelector(state => state.products);
+  const { isPostProductSuccess, isUploadProductRequest, isUploadProductSuccess, product} = useSelector(state => state.products);
+  const { categories } = useSelector(state => state.categories);
+  const { colors } = useSelector(state => state.colors);
+  const { sizes } = useSelector(state => state.sizes);
   const dispatch = useDispatch();
   const prevPostSuccess = usePrevious(isPostProductSuccess);
-  const [images, setImages] = useState();
-
+  const prevUploadSuccess = usePrevious(isUploadProductSuccess);
+  const [images, setImages] = useState({main: [], gallery: []});
+  const [category, setCategory] = useState(0);
+  
+  
+  useEffect(() => {
+    dispatch(getColorsRequest());
+    dispatch(getSizesRequest());
+  }, [dispatch])
+  
   useEffect(() => {
     if (prevPostSuccess === false && isPostProductSuccess) {
-      dispatch(uploadProductRequest(JSON.stringify({data: images, id: product.id})))
+      const formData = new FormData();
+      images.gallery.forEach((image) => {
+        formData.append("gallery", image.originFileObj);
+      })
+      formData.append("main", images.main[0].originFileObj);
+      console.log('formData', formData)
+      dispatch(uploadProductRequest({formData, id: product.id}))
     }
-  }, [dispatch, isPostProductSuccess, prevPostSuccess, product])
+  }, [dispatch, images, isPostProductSuccess, prevPostSuccess, product])
+
+
+  useEffect(() => {
+    if (prevUploadSuccess === false && isUploadProductSuccess) {
+      notification["success"]({
+        duration: 3,
+        description: "Product Created"
+      });
+    }
+  })
+
+  const normFile = (e, name) => {
+    const newImages = {...images}
+    if (name === "main") {
+      const main = e.fileList;
+      newImages.main = main;
+      setImages(newImages);
+    } else {
+      const gallery = e.fileList;
+      newImages.gallery = gallery;
+      setImages(newImages);
+    }
+  };
 
   const onFinish = (values) => {
-    const {main, gallery, ...data} = values
-    setImages({main, gallery});
+    console.log(values)
+    const {main, gallery, ...data} = values;
+    data.categoryId = category;
     dispatch(postProductRequest(data));
   }
 
@@ -77,20 +115,24 @@ export default function ProductAdd() {
           name="description"
           label="Description"
           hasFeedback
-          rules={[{ required: true, message: 'Please Type your Product Description!' }]}
+          rules={[{ required: true, message: 'Please Type your Product Category!' }]}
         >
           <Input.TextArea showCount maxLength={100} />
         </Form.Item>
         <Form.Item
           name="categoryId"
           label="Category"
-          hasFeedback
-          rules={[{ required: true, message: 'Please Type your Product Category!' }]}
+          hasFeedback={category === 0}
+          rules={[{ required: (category === 0), message: 'Please Type your Product Category!' }]}
         >
-          <Select placeholder="Please select a Category">
-            <Option value={1}>China</Option>
-            <Option value={2}>U.S.A</Option>
-          </Select>
+          <Tree
+            showLine
+            switcherIcon={<DownOutlined/>}
+            onSelect={(key) => {
+              setCategory(key[0])
+            }}
+            treeData={categories}
+          />
         </Form.Item>
         <Form.Item
           name="colors"
@@ -98,9 +140,7 @@ export default function ProductAdd() {
           rules={[{ required: true, message: 'Please select your Product colors!', type: 'array' }]}
         >
           <Select mode="multiple" placeholder="Please select Product colors">
-            <Option value={1}>Red</Option>
-            <Option value={2}>Green</Option>
-            <Option value={3}>Blue</Option>
+            {colors.map(color => <Option key={color.id} value={color.id}>{color.color}</Option>)}
           </Select>
         </Form.Item>
         <Form.Item
@@ -109,19 +149,16 @@ export default function ProductAdd() {
           rules={[{ required: true, message: 'Please select your Product Sizes!', type: "array" }]}
         >
           <Select mode="multiple" placeholder="Please select Product colors">
-            <Option value={1}>Red</Option>
-            <Option value={2}>Green</Option>
-            <Option value={3}>Blue</Option>
+            {sizes.map(size =>  <Option key={size.id} value={size.id}>{size.size}</Option>)})}
           </Select>
         </Form.Item>
         <Form.Item
           name="main"
           label="Main Image"
           valuePropName="fileList"
-          rules={[{ required: true, message: 'Please upload your Product Main Image!' }]}
-          getValueFromEvent={normFile}
+          getValueFromEvent={(e) => normFile(e, "main")}
         >
-          <Upload name="logo" maxCount={1} action="/upload.do" listType="picture">
+          <Upload name="logo" maxCount={1} listType="picture">
             <Button icon={<UploadOutlined />}>Click to upload</Button>
           </Upload>
         </Form.Item>
@@ -129,10 +166,9 @@ export default function ProductAdd() {
           name="gallery"
           label="Gallery Images"
           valuePropName="fileList"
-          rules={[{ required: true, message: 'Please upload your Product Gallery Images!' }]}
-          getValueFromEvent={normFile}
+          getValueFromEvent={(e) => normFile(e, "gallery")}
         >
-          <Upload name="logo" maxCount={4} action="/upload.do" listType="picture">
+          <Upload name="logo" maxCount={4} listType="picture">
             <Button icon={<UploadOutlined />}>Click to upload</Button>
           </Upload>
         </Form.Item>
@@ -141,7 +177,7 @@ export default function ProductAdd() {
         </Form.Item>
         <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
           <Space>
-            <Button type="primary" htmlType="submit">
+            <Button loading={isUploadProductRequest} type="primary" htmlType="submit">
               Submit
             </Button>
             <Button htmlType="reset">Reset</Button>

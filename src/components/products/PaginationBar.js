@@ -9,6 +9,7 @@ export default function PaginationBar() {
   const dispatch = useDispatch();
 
   const onChange = (page) => {
+    console.log(page)
     setCurrent(page);
     dispatch(getProductsRequest({...filterState, page}));
   };

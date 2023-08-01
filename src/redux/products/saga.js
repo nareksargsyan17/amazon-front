@@ -11,7 +11,16 @@ import {
   getCartsProductsRequest,
   getUserProductsRequest,
   getUserProductsSuccess,
-  getUserProductsFailure, postProductRequest, uploadProductRequest, postProductSuccess, postProductFailure,
+  getUserProductsFailure,
+  postProductRequest,
+  uploadProductRequest,
+  postProductSuccess,
+  postProductFailure,
+  uploadProductSuccess,
+  uploadProductFailure,
+  deleteProductSuccess,
+  deleteProductFailure,
+  deleteProductRequest, updateProductRequest, updateProductSuccess, updateProductFailure,
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
 
@@ -100,30 +109,66 @@ function* postProduct(action) {
   }
 }
 
-function* uploadImages(action) {
+function* uploadImages({ payload }) {
   try {
-    let formData = new FormData()
-    const {data, id} = JSON.parse(action.payload)
-    console.log(data, id)
-    formData.append("main", JSON.stringify(data.main))
-    formData.append("gallery", JSON.stringify(data.gallery))
-    console.log(formData.values())
-    const response = yield instance.post(`/user/products/upload_images/${id}`, formData, )
+    const {formData, id} = payload;
+    const response = yield instance.post(`/user/products/upload_images/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    })
+    console.log(response)
     if (response.status === 200) {
-      yield put(getProductSuccess(response.data.successMessage))
+      yield put(uploadProductSuccess(response.data.successMessage))
     } else {
-      yield put(getProductFailure(response.data.message))
+      yield put(uploadProductFailure(response.data.message))
     }
   } catch (error) {
-    yield put(getProductFailure(error.message))
+    yield put(uploadProductFailure(error.message))
+  }
+}
+
+
+function* deleteProduct(action) {
+  try {
+    const response = yield instance({
+      method: "delete",
+      url: `/user/products/delete/` + action.payload,
+    })
+    if (response.status === 200) {
+      yield put(deleteProductSuccess(response.data.successMessage))
+    } else {
+      yield put(deleteProductFailure(response.data.message))
+    }
+  } catch (error) {
+    yield put(deleteProductFailure(error.message))
+  }
+}
+
+function* updateProduct(action) {
+  try {
+    const response = yield instance({
+      method: "put",
+      url: `/user/products/update/` + action.payload.id,
+      data: action.payload.data
+    })
+    if (response.status === 200) {
+      yield put(updateProductSuccess(response.data.successMessage))
+    } else {
+      yield put(updateProductFailure(response.data.message))
+    }
+  } catch (error) {
+    yield put(updateProductFailure(error.message))
   }
 }
 
 export default function* productsSaga() {
-  yield takeEvery(getProductsRequest, getProducts);
+  yield takeLatest(getProductsRequest, getProducts);
   yield takeLatest(getProductRequest, getProduct);
   yield takeLatest(getCartsProductsRequest, getCartsProducts);
   yield takeLatest(getUserProductsRequest, getUserProducts);
   yield takeLatest(postProductRequest, postProduct);
   yield takeLatest(uploadProductRequest, uploadImages);
+  yield takeLatest(deleteProductRequest, deleteProduct);
+  yield takeLatest(updateProductRequest, updateProduct);
 }

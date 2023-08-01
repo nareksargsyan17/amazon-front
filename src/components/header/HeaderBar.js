@@ -12,16 +12,24 @@ const items = [
   {
     key: '1',
     label: (
-      <a  href="/change">
-        change password
+      <a  href="/mystore">
+        My Store
       </a>
     ),
   },
   {
     key: '2',
     label: (
+      <a  href="/change">
+        Change Password
+      </a>
+    ),
+  },
+  {
+    key: '3',
+    label: (
       <a  href="/addresses">
-        addresses
+        Addresses
       </a>
     ),
   },

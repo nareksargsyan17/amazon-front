@@ -29,3 +29,12 @@ export const postProductFailure = createAction("POST_PRODUCT_FAILURE")
 export const uploadProductRequest = createAction("UPLOAD_PRODUCT_REQUEST")
 export const uploadProductSuccess = createAction("UPLOAD_PRODUCT_SUCCESS")
 export const uploadProductFailure = createAction("UPLOAD_PRODUCT_FAILURE")
+
+export const deleteProductRequest = createAction("DELETE_PRODUCT_REQUEST")
+export const deleteProductSuccess = createAction("DELETE_PRODUCT_SUCCESS")
+export const deleteProductFailure = createAction("DELETE_PRODUCT_FAILURE")
+
+
+export const updateProductRequest = createAction("UPDATE_PRODUCT_REQUEST")
+export const updateProductSuccess = createAction("UPDATE_PRODUCT_SUCCESS")
+export const updateProductFailure = createAction("UPDATE_PRODUCT_FAILURE")

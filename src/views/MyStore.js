@@ -1,17 +1,18 @@
 import {Content} from "antd/es/layout/layout";
-import {Button, Empty, Skeleton, Space, Switch} from "antd";
-import {CheckOutlined, CloseOutlined, PlusOutlined} from "@ant-design/icons";
+import {Button, Empty, Popconfirm, Skeleton, Space, Switch} from "antd";
+import {CheckOutlined, CloseOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import React, {useEffect, useState} from "react";
 import Card from "antd/es/card/Card";
 import Meta from "antd/es/card/Meta";
 import {useDispatch, useSelector} from "react-redux";
 import {usePrevious} from "../usePrevious/usePrevious";
-import {getUserProductsRequest} from "../redux/products/actions";
+import {deleteProductRequest, getUserProductsRequest} from "../redux/products/actions";
 import {useNavigate} from "react-router-dom";
 
 export default function MyStore() {
   const { products, isGetUserProductsRequest, isGetUserProductsSuccess } = useSelector(state => state.products)
   const [isPublished, setPublish] = useState(true);
+  const [productsList, setProducts] = useState(products);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const prevSuccess = usePrevious(isGetUserProductsSuccess);
@@ -19,6 +20,12 @@ export default function MyStore() {
   useEffect(() => {
     dispatch(getUserProductsRequest())
   }, [dispatch]);
+
+  useEffect(() => {
+    if (prevSuccess === false && isGetUserProductsSuccess) {
+      setProducts(products);
+    }
+  }, [isGetUserProductsSuccess, prevSuccess, products])
 
 
   return (
@@ -38,8 +45,8 @@ export default function MyStore() {
       <Skeleton active loading={isGetUserProductsRequest}>
         <Space wrap>
           {
-            products?.rows?.length > 0 ?
-              (products.rows.map((elem) => {
+            productsList?.rows?.length > 0 ?
+              (productsList.rows.map((elem) => {
                 if (elem.isPublished === isPublished) {
                   return <Card
                     key={elem.id}
@@ -50,6 +57,30 @@ export default function MyStore() {
                   >
                     <Meta title={elem.name} description={elem.brand}/>
                     <Meta title={"$" + elem.price}/>
+
+                    <Space style={{margin: "20px 0"}}>
+                      <Button type="primary" onClick={() => navigate("./edit/" + elem.id)}>Edit</Button>
+                      <Popconfirm
+                        title="Delete Product from Store?"
+                        description="Are you sure to delete this product?"
+                        icon={
+                          <QuestionCircleOutlined
+                            style={{
+                              color: 'red',
+                            }}
+                          />
+                        }
+                        onConfirm={
+                          () => {
+                            dispatch(deleteProductRequest(elem.id));
+                            const newList = productsList.rows.filter(element => element.id !== elem.id);
+                            setProducts(newList);
+                          }
+                        }
+                      >
+                        <Button danger>Delete</Button>
+                      </Popconfirm>
+                    </Space>
                   </Card>
                 } else {
                    return null

@@ -20,6 +20,7 @@ import ChangePassword from "./views/ChangePassword";
 import Addresses from "./views/Addresses";
 import MyStore from "./views/MyStore";
 import ProductAdd from "./views/ProductAdd";
+import ProductEdit from "./views/ProductEdit";
 const { Footer } = Layout;
 
 const App = () => {
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="/addresses" element={<><HeaderBar/><Back/><Addresses/></>}/>
           <Route path="/mystore" element={<><HeaderBar/><Back/><MyStore/></>}/>
           <Route path="/mystore/add" element={<><HeaderBar/><Back/><ProductAdd/></>}/>
+          <Route path="/mystore/edit/:productId" element={<><HeaderBar/><Back/><ProductEdit/></>}/>
           <Route path="/cart" element={<><HeaderBar/><Back/><Cart/></>}/>
           <Route path="/verify/:userId/:token" element={<Verify/>} />
         </Routes>
