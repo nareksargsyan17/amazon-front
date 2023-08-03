@@ -39,10 +39,6 @@ function* addToCart(action) {
       method: "post",
       url: "/user/cart/add",
       data: action.payload.data,
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + action.payload.token
-      }
     })
     if (response.status === 200) {
       yield put(postCartSuccess(response.data.successMessage));
@@ -54,15 +50,11 @@ function* addToCart(action) {
   }
 }
 
-function* getCartProducts(action) {
+function* getCartProducts() {
   try {
     const response = yield instance({
       method: "get",
-      url: "/user/cart/get_carts",
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + action.payload
-      }
+      url: "/user/cart/get_carts"
     })
     if (response.status === 200) {
       yield put(getCartSuccess(response.data.data));
@@ -79,13 +71,8 @@ function* updateCart (action) {
     const response = yield instance({
       method: "put",
       url: "/user/cart/update/" + action.payload.id,
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + action.payload.token
-      },
       data: action.payload.data
     })
-    console.log(response.data)
     if (response.status === 200) {
       yield put(updateCartSuccess(response.data.data));
     } else {
@@ -100,12 +87,10 @@ function* deleteCart (action) {
   try {
     const response = yield instance({
       method: "delete",
-      url: "/user/cart/delete/" + action.payload.id,
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + action.payload.token
-      }
+      url: "/user/cart/delete",
+      data:  action.payload
     })
+    console.log(response.data.data)
     if (response.status === 200) {
       yield put(deleteCartSuccess(response.data.data));
     } else {

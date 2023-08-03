@@ -9,6 +9,7 @@ import {usePrevious} from "../usePrevious/usePrevious";
 import Tree from "antd/es/tree/Tree";
 import {getColorsRequest} from "../redux/colors/actions";
 import {getSizesRequest} from "../redux/sizes/actions";
+import {useNavigate} from "react-router-dom";
 const {Option} = Select;
 const {Title} = Typography
 
@@ -29,7 +30,7 @@ export default function ProductAdd() {
   const prevUploadSuccess = usePrevious(isUploadProductSuccess);
   const [images, setImages] = useState({main: [], gallery: []});
   const [category, setCategory] = useState(0);
-  
+  const navigate = useNavigate();
   
   useEffect(() => {
     dispatch(getColorsRequest());
@@ -40,13 +41,13 @@ export default function ProductAdd() {
     if (prevPostSuccess === false && isPostProductSuccess) {
       const formData = new FormData();
       images.gallery.forEach((image) => {
-        formData.append("gallery", image.originFileObj);
+        formData.append("gallery", image);
       })
-      formData.append("main", images.main[0].originFileObj);
-      console.log('formData', formData)
-      dispatch(uploadProductRequest({formData, id: product.id}))
+      formData.append("main", images.main[0]);
+      dispatch(uploadProductRequest({formData, id: product.id}));
+      navigate("/mystore")
     }
-  }, [dispatch, images, isPostProductSuccess, prevPostSuccess, product])
+  }, [dispatch, images, isPostProductSuccess, navigate, prevPostSuccess, product])
 
 
   useEffect(() => {
@@ -58,17 +59,16 @@ export default function ProductAdd() {
     }
   })
 
-  const normFile = (e, name) => {
+  const beforeUpload = (file, name) => {
     const newImages = {...images}
     if (name === "main") {
-      const main = e.fileList;
-      newImages.main = main;
-      setImages(newImages);
+      newImages.main.push(file)
     } else {
-      const gallery = e.fileList;
-      newImages.gallery = gallery;
-      setImages(newImages);
+      newImages.gallery.push(file)
     }
+    setImages(newImages);
+
+    return false;
   };
 
   const onFinish = (values) => {
@@ -155,20 +155,18 @@ export default function ProductAdd() {
         <Form.Item
           name="main"
           label="Main Image"
-          valuePropName="fileList"
-          getValueFromEvent={(e) => normFile(e, "main")}
+          valuePropName="main"
         >
-          <Upload name="logo" maxCount={1} listType="picture">
+          <Upload name="logo" maxCount={1} listType="picture" beforeUpload={(e) => beforeUpload(e, "main")}>
             <Button icon={<UploadOutlined />}>Click to upload</Button>
           </Upload>
         </Form.Item>
         <Form.Item
           name="gallery"
           label="Gallery Images"
-          valuePropName="fileList"
-          getValueFromEvent={(e) => normFile(e, "gallery")}
+          valuePropName="gallery"
         >
-          <Upload name="logo" maxCount={4} listType="picture">
+          <Upload name="logo" maxCount={4} listType="picture" multiple={true} beforeUpload={(e) => beforeUpload(e, "gallery")}>
             <Button icon={<UploadOutlined />}>Click to upload</Button>
           </Upload>
         </Form.Item>

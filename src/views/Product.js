@@ -29,7 +29,6 @@ export default function Product() {
   let { productId } = useParams();
   const dispatch = useDispatch();
   const {
-    isGetProductFailure,
     isGetProductRequest,
     isGetProductSuccess,
     cartCount,
@@ -62,19 +61,19 @@ export default function Product() {
         duration: 3,
         description: "This Product added in the Cart"
       })
+      dispatch(changeCartCountRequest(cartCount + count));
     } else if (isPostCartFailure && prevFailure === false) {
       notification["warning"]({
         duration: 3,
         description: "This Product already exists in the Cart"
       });
     }
-  }, [isPostCartFailure, isPostCartSuccess, prevFailure, prevSuccess])
+  }, [cartCount, count, dispatch, isPostCartFailure, isPostCartSuccess, prevFailure, prevSuccess])
 
   const onToCart = () => {
     const { id } = product;
     if (localStorage.getItem("token")) {
-      dispatch(postCartRequest({data: {id, color, size, count}, token: localStorage.getItem("token")}))
-      dispatch(changeCartCountRequest(cartCount + count));
+      dispatch(postCartRequest({data: {id, color, size, count, productId}, token: localStorage.getItem("token")}))
     } else {
       let productsInStorage = localStorage.getItem("products");
       let savedProductsInStorage = localStorage.getItem("savedProducts");
@@ -100,12 +99,13 @@ export default function Product() {
         }
       } else {
         if (localStorage.getItem("token")) {
-          dispatch(postCartRequest({data: {id, color, size, count}, token: localStorage.getItem("token")}))
+          dispatch(postCartRequest({data: {id, color, size, count, productId}, token: localStorage.getItem("token")}))
         }
         localStorage.setItem("products", JSON.stringify([{
           id,
           color,
           size,
+          productId,
           ...{count}
         }]));
         dispatch(changeCartCountRequest(count));
@@ -130,8 +130,8 @@ export default function Product() {
 
   const images = () => {
     const imagesArr = [];
-    imagesArr.push(product.images.find(elem => elem.isMain === true).path);
-    product.images.filter(elem => elem.isMain === false).forEach(image => {
+    imagesArr.push(product?.images?.find(elem => elem.isMain === true).path);
+    product.images?.filter(elem => elem.isMain === false).forEach(image => {
       imagesArr.push(image.path);
     })
     return imagesArr;
@@ -153,7 +153,7 @@ export default function Product() {
     <Layout style={{minHeight: "100%", padding: "0 50px"}}>
       <Skeleton active loading={isGetProductRequest}>
         {
-          !isGetProductFailure && product?.name ? (
+          isGetProductSuccess && product?.name ? (
             <Content style={contentStyle}>
               <Card title={product.name} bordered={true} style={{maxWidth: 800}}>
                 <Carousel effect="fade" dots={{className: "dots"}} style={{width: "100%", padding: "20px 0"}}>
@@ -168,7 +168,7 @@ export default function Product() {
                   <Descriptions.Item label="Price">${product.price}</Descriptions.Item>
                   <Descriptions.Item label="Create time">{product.createdAt}</Descriptions.Item>
                   <Descriptions.Item
-                    label="Created By">{product.owner.firstName + " " + product.owner.lastName}</Descriptions.Item>
+                    label="Created By">{product.owner?.firstName + " " + product.owner?.lastName}</Descriptions.Item>
                   <Descriptions.Item label="Category">{product.category.name}</Descriptions.Item>
                   <Descriptions.Item label="Colors" span={2}>{
                     <Radio.Group onChange={onSetColor} defaultValue={product.colors[0].color}>

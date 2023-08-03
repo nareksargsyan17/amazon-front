@@ -1,5 +1,5 @@
 import {Content} from "antd/es/layout/layout";
-import {Button, Empty, Popconfirm, Skeleton, Space, Switch} from "antd";
+import {Button, Empty, Popconfirm, Skeleton, Space, Switch, Typography} from "antd";
 import {CheckOutlined, CloseOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import React, {useEffect, useState} from "react";
 import Card from "antd/es/card/Card";
@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {usePrevious} from "../usePrevious/usePrevious";
 import {deleteProductRequest, getUserProductsRequest} from "../redux/products/actions";
 import {useNavigate} from "react-router-dom";
+const { Title } = Typography;
 
 export default function MyStore() {
   const { products, isGetUserProductsRequest, isGetUserProductsSuccess } = useSelector(state => state.products)
@@ -30,6 +31,7 @@ export default function MyStore() {
 
   return (
     <Content  style={{margin: "0 50px", padding: "30px", backgroundColor: "white"}}>
+      <Title style={{textAlign: "center"}}>My Store</Title>
       <Space
         style={{display: "flex", justifyContent: "space-between", margin: "30px 0"}}
       >
@@ -52,13 +54,13 @@ export default function MyStore() {
                     key={elem.id}
                     hoverable
                     size="large"
-                    style={{width: "260px", marginBottom: "30px"}}
-                    cover={<img alt="example" src={`http://localhost:3001/${elem.images[0].path}`}/>}
+                    style={{width: "260px", marginBottom: "30px",  height: "450px"}}
+                    cover={<img onClick={() => navigate("/" + elem.id)} alt="example" src={`http://localhost:3001/${elem.images[0].path}`}/>}
                   >
                     <Meta title={elem.name} description={elem.brand}/>
                     <Meta title={"$" + elem.price}/>
 
-                    <Space style={{margin: "20px 0"}}>
+                    <Space style={{margin: "20px 0", bottom: "0", position: "absolute"}}>
                       <Button type="primary" onClick={() => navigate("./edit/" + elem.id)}>Edit</Button>
                       <Popconfirm
                         title="Delete Product from Store?"
@@ -72,9 +74,11 @@ export default function MyStore() {
                         }
                         onConfirm={
                           () => {
-                            dispatch(deleteProductRequest(elem.id));
-                            const newList = productsList.rows.filter(element => element.id !== elem.id);
+                            const newList = {...productsList};
+                            newList.rows = newList.rows.filter(element => element.id !== elem.id);
+                            newList.count = newList.count - 1;
                             setProducts(newList);
+                            dispatch(deleteProductRequest(elem.id));
                           }
                         }
                       >

@@ -12,15 +12,11 @@ import {instance} from "../../configs/axiosInstance";
 import {put, takeEvery} from "redux-saga/effects";
 
 
-function* getAddresses(action) {
+function* getAddresses() {
   try {
     const response = yield instance({
       method: "get",
       url: "/user/addresses/get_all",
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + action.payload
-      },
     })
     if (response.status === 200) {
       yield put(getAddressesSuccess(response.data.data));

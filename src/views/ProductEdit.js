@@ -4,9 +4,9 @@ import {useDispatch, useSelector} from "react-redux";
 import Upload from "antd/es/upload/Upload";
 import {DownOutlined, UploadOutlined} from "@ant-design/icons";
 import {
+  deleteImageRequest,
   getProductRequest,
-  getProductsRequest,
-  postProductRequest, updateProductRequest,
+  updateProductRequest,
   uploadProductRequest
 } from "../redux/products/actions";
 import {useEffect, useState} from "react";
@@ -14,7 +14,7 @@ import {usePrevious} from "../usePrevious/usePrevious";
 import Tree from "antd/es/tree/Tree";
 import {getColorsRequest} from "../redux/colors/actions";
 import {getSizesRequest} from "../redux/sizes/actions";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 const {Option} = Select;
 const {Title} = Typography
 
@@ -26,7 +26,6 @@ const formItemLayout = {
 export default function  ProductEdit() {
   const { isUpdateProductSuccess, isUploadProductRequest, isUploadProductSuccess, product,
     isGetProductSuccess} = useSelector(state => state.products);
-
   const { categories } = useSelector(state => state.categories);
   const { colors } = useSelector(state => state.colors);
   const { sizes } = useSelector(state => state.sizes);
@@ -34,10 +33,11 @@ export default function  ProductEdit() {
   const prevUpdateSuccess = usePrevious(isUpdateProductSuccess);
   const prevUploadSuccess = usePrevious(isUploadProductSuccess);
   const prevGetSuccess = usePrevious(isGetProductSuccess);
-  const [images, setImages] = useState({main: [], gallery: []});
   const [category, setCategory] = useState(0);
+  const [images, setImages] = useState({main: [], gallery: []});
   const [defaultImages, setImagesDefault] = useState({main: [], gallery: []});
   const { productId } = useParams();
+  const navigate = useNavigate();
 
 
 
@@ -51,10 +51,9 @@ export default function  ProductEdit() {
 
   useEffect(() => {
     if (isGetProductSuccess && prevGetSuccess === false) {
-      console.log(product)
+      setCategory(product.categoryId);
       const defImages = {...defaultImages}
       product.images.forEach(image => {
-        console.log(image)
         if (image.isMain) {
           defImages.main.push({uid: image.id, url: `http://localhost:3001/${image.path}`})
         } else {
@@ -67,45 +66,58 @@ export default function  ProductEdit() {
   }, [defaultImages, isGetProductSuccess, prevGetSuccess, product]);
 
   useEffect(() => {
-    console.log(images, defaultImages)
     if (prevUpdateSuccess === false && isUpdateProductSuccess) {
       const formData = new FormData();
-      console.log(images)
-      // images.gallery.forEach((image) => {
-      //   formData.append("gallery", image.originFileObj);
-      // })
-      // formData.append("main", images.main[0].originFileObj);
-      // console.log('formData', formData)
-      // dispatch(uploadProductRequest({formData, id: product.id}))
+      if (images.main.length > 0) {
+        formData.append("main", images.main[0]);
+        dispatch(deleteImageRequest(defaultImages.main[0].uid))
+      }
+
+      if (images.gallery.length > 0) {
+        images.gallery.forEach((image) => {
+          console.log(defaultImages)
+          formData.append("gallery", image);
+        })
+      }
+
+      if (images.gallery.length > 0 || images.main.length > 0) {
+        dispatch(uploadProductRequest({formData, id: product.id}))
+      }
+
+      navigate("/mystore")
     }
-  }, [dispatch, images, isUpdateProductSuccess, prevUpdateSuccess])
+  }, [defaultImages, dispatch, images.gallery, images.main, isUpdateProductSuccess, navigate, prevUpdateSuccess, product.id])
 
 
   useEffect(() => {
     if (prevUploadSuccess === false && isUploadProductSuccess) {
       notification["success"]({
         duration: 3,
-        description: "Product Created"
+        description: "Product Updated"
       });
     }
-  })
+  }, [isUploadProductSuccess, prevUploadSuccess])
 
-  const normFile = (e, name) => {
-    const formData = new FormData();
-    console.log(e, product)
+  const beforeUpload = (file, name) => {
+    const newImages = {...images}
     if (name === "main") {
-      formData.append("main", e.file.originFileObj)
+      newImages.main.push(file)
     } else {
-      formData.append("gallery", e.file.originFileObj)
+      newImages.gallery.push(file)
     }
-    dispatch(uploadProductRequest({formData, id: product.id}))
+    setImages(newImages);
+
+    return false;
   };
 
   const onFinish = (values) => {
-    console.log(values)
     const {main, gallery, ...data} = values;
     data.categoryId = category;
     dispatch(updateProductRequest({data, id: product.id}));
+  }
+
+  const onRemoveImage = (e) => {
+    dispatch(deleteImageRequest(e.uid))
   }
 
   return (
@@ -117,6 +129,14 @@ export default function  ProductEdit() {
           onFinish={onFinish}
           {...formItemLayout}
           style={{ minWidth: 800 }}
+          initialValues={{
+            name: product.name,
+            brand: product.brand,
+            price: product.price,
+            description: product.description,
+            colors: product?.colors?.map(color => color.id),
+            sizes: product?.sizes?.map(size => size.id)
+          }}
         >
           <Form.Item
             name="name"
@@ -124,7 +144,7 @@ export default function  ProductEdit() {
             hasFeedback
             rules={[{ required: false, message: 'Please Type your Product name!' }]}
           >
-            <Input placeholder="Product Name" defaultValue={product.name}/>
+            <Input placeholder="Product Name" />
           </Form.Item>
           <Form.Item
             name="brand"
@@ -132,7 +152,7 @@ export default function  ProductEdit() {
             hasFeedback
             rules={[{ required: false, message: 'Please Type your Product Brand!' }]}
           >
-            <Input placeholder="Brand" defaultValue={product.brand}/>
+            <Input placeholder="Brand"/>
           </Form.Item>
           <Form.Item
             name="price"
@@ -140,7 +160,7 @@ export default function  ProductEdit() {
             hasFeedback
             rules={[{ required: false, message: 'Please Type your Product Price!' }]}
           >
-            <InputNumber min={0} defaultValue={product.price}/>
+            <InputNumber min={0}/>
           </Form.Item>
           <Form.Item
             name="description"
@@ -148,7 +168,7 @@ export default function  ProductEdit() {
             hasFeedback
             rules={[{ required: false, message: 'Please Type your Product Category!' }]}
           >
-            <Input.TextArea showCount maxLength={100} defaultValue={product.description}/>
+            <Input.TextArea showCount maxLength={100}/>
           </Form.Item>
           <Form.Item
             name="categoryId"
@@ -171,7 +191,7 @@ export default function  ProductEdit() {
             label="Select Colors"
             rules={[{ required: false, message: 'Please select your Product colors!', type: 'array' }]}
           >
-            <Select mode="multiple" placeholder="Please select Product colors" defaultValue={product?.colors?.map(color => color.id)}>
+            <Select mode="multiple" placeholder="Please select Product colors">
               {colors.map(color => <Option key={color.id} value={color.id}>{color.color}</Option>)}
             </Select>
           </Form.Item>
@@ -180,27 +200,25 @@ export default function  ProductEdit() {
             label="Select Sizes"
             rules={[{ required: false, message: 'Please select your Product Sizes!', type: "array" }]}
           >
-            <Select mode="multiple" placeholder="Please select Product colors" defaultValue={product?.sizes?.map(size => size.id)}>
+            <Select mode="multiple" placeholder="Please select Product colors">
               {sizes.map(size =>  <Option key={size.id} value={size.id}>{size.size}</Option>)})}
             </Select>
           </Form.Item>
           <Form.Item
             name="main"
             label="Main Image"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => normFile(e, "main")}
+            valuePropName="main"
           >
-            <Upload name="logo" maxCount={1} listType="picture" defaultFileList={defaultImages.main}>
+            <Upload name="logo" maxCount={1} listType="picture" defaultFileList={defaultImages.main} onRemove={onRemoveImage} beforeUpload={(e) => beforeUpload(e, "main")}>
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>
           </Form.Item>
           <Form.Item
             name="gallery"
             label="Gallery Images"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => normFile(e, "gallery")}
+            valuePropName="gallery"
           >
-            <Upload name="logo" maxCount={4} listType="picture" defaultFileList={defaultImages.gallery}>
+            <Upload name="logo" maxCount={4} listType="picture" defaultFileList={defaultImages.gallery} onRemove={onRemoveImage} multiple={true} beforeUpload={(e) => beforeUpload(e, "gallery")}>
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>
           </Form.Item>

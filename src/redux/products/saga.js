@@ -1,4 +1,4 @@
-import { put, takeEvery, takeLatest } from 'redux-saga/effects'
+import { put, takeLatest } from 'redux-saga/effects'
 import {
   getProductsRequest,
   getProductsSuccess,
@@ -20,7 +20,12 @@ import {
   uploadProductFailure,
   deleteProductSuccess,
   deleteProductFailure,
-  deleteProductRequest, updateProductRequest, updateProductSuccess, updateProductFailure,
+  deleteProductRequest,
+  updateProductRequest,
+  updateProductSuccess,
+  updateProductFailure,
+  deleteImageRequest,
+  deleteImageSuccess, deleteImageFailure,
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
 
@@ -128,6 +133,20 @@ function* uploadImages({ payload }) {
   }
 }
 
+function* deleteImage({ payload }) {
+  try {
+    console.log(payload)
+    const response = yield instance.delete(`/user/products/delete_image/${payload}`)
+    if (response.status === 200) {
+      yield put(deleteImageSuccess(response.data.successMessage))
+    } else {
+      yield put(deleteImageFailure(response.data.message))
+    }
+  } catch (error) {
+    yield put(deleteImageFailure(error.message))
+  }
+}
+
 
 function* deleteProduct(action) {
   try {
@@ -171,4 +190,5 @@ export default function* productsSaga() {
   yield takeLatest(uploadProductRequest, uploadImages);
   yield takeLatest(deleteProductRequest, deleteProduct);
   yield takeLatest(updateProductRequest, updateProduct);
+  yield takeLatest(deleteImageRequest, deleteImage);
 }

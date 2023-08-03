@@ -22,7 +22,10 @@ import {
   uploadProductFailure,
   deleteProductRequest,
   deleteProductSuccess,
-  deleteProductFailure, updateProductRequest, updateProductSuccess, updateProductFailure,
+  deleteProductFailure,
+  updateProductRequest,
+  updateProductSuccess,
+  updateProductFailure, deleteImageRequest, deleteImageSuccess, deleteImageFailure, addCartProducts,
 
 } from './actions'
 
@@ -51,13 +54,16 @@ const defaultState = {
   isUpdateProductRequest: false,
   isUpdateProductSuccess: false,
   isUpdateProductFailure: false,
+  isDeleteImageRequest: false,
+  isDeleteImageSuccess: false,
+  isDeleteImageFailure: false,
   product: {},
   cartCount: 0,
   filterState: {id : "all", page: 1, limit: 10, sortDirection : "DESC", sortWith : "id", searchBy: "", color: [], size: []},
   products: {
     rows: []
   },
-  cartsProducts: {},
+  cartsProducts: [],
   errorMessage: '',
 }
 
@@ -69,6 +75,13 @@ const reducer = handleActions(
     ) => ({
       ...state,
       cartCount: payload
+    }),
+    [addCartProducts]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      cartsProducts: payload
     }),
     [changeFilterRequest]: (
       state,
@@ -298,6 +311,34 @@ const reducer = handleActions(
       isUpdateProductRequest: false,
       isUpdateProductSuccess: false,
       isUpdateProductFailure: true,
+      errorMessage: payload
+    }),
+    [deleteImageRequest]: (
+      state,
+    ) => ({
+      ...state,
+      isDeleteImageRequest: true,
+      isDeleteImageSuccess: false,
+      isDeleteImageFailure: false,
+    }),
+    [deleteImageSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isDeleteImageRequest: false,
+      isDeleteImageSuccess: true,
+      isDeleteImageFailure: false,
+      successMessage: payload,
+    }),
+    [deleteImageFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isDeleteImageRequest: false,
+      isDeleteImageSuccess: false,
+      isDeleteImageFailure: true,
       errorMessage: payload
     }),
   },

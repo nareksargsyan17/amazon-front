@@ -1,4 +1,4 @@
-import {Button, Card, Empty, Image, Layout, Popconfirm, Select, Skeleton, Space, Typography} from "antd";
+import {Button, Card, Empty, Image, Layout, notification, Popconfirm, Select, Skeleton, Space, Typography} from "antd";
 import "../App.css";
 import {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {deleteCartRequest, getCartRequest, updateCartRequest} from "../redux/cart/actions";
 import {usePrevious} from "../usePrevious/usePrevious";
-import {changeCartCountRequest} from "../redux/products/actions";
+import {addCartProducts, changeCartCountRequest} from "../redux/products/actions";
+import {postSessionRequest} from "../redux/orders/actions";
+import {getAddressesRequest} from "../redux/addresses/actions";
 
 const { Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -15,7 +17,9 @@ const { Meta } = Card
 export default function AuthCart() {
   const dispatch = useDispatch();
   const {cartCount, isGetCartsProductRequest} = useSelector(state => state.products);
-  const {cartsData, isUpdateCartSuccess, isDeleteCartSuccess,isGetCartSuccess, updatedCart, deletedCartId} = useSelector(state => state.cart);
+  const {cartsData, isUpdateCartSuccess, isDeleteCartSuccess,isGetCartSuccess, updatedCart, deletedCartsId} = useSelector(state => state.cart);
+  const { isPostSessionSuccess, url } = useSelector(state => state.orders)
+  const { addresses, isGetAddressesSuccess } = useSelector(state => state.addresses)
   const [cartArr, setCart] = useState(cartsData);
   const navigate = useNavigate();
   const prevUpdateSuccess = usePrevious(isUpdateCartSuccess);
@@ -61,20 +65,44 @@ export default function AuthCart() {
       setCart(newCartsData);
 
     }
+    
+  }, [cartArr.products, cartArr.savedProducts, cartCount, cartsData, dispatch, isGetCartSuccess, isUpdateCartSuccess, prevGetSuccess, prevUpdateSuccess, updatedCart.count, updatedCart.id, updatedCart.type])
+  useEffect(() => {
     if (isDeleteCartSuccess && prevDeleteSuccess === false) {
       const newCartsData = {products: [], savedProducts: []};
-      const deletedElem = cartArr.products.find(elem => elem.id === deletedCartId);
+      const deletedElem = cartArr.products.filter(elem => elem.id === deletedCartsId[0]);
       if (deletedElem) {
         dispatch(changeCartCountRequest(cartCount - deletedElem.count));
       }
-      newCartsData.products = cartArr.products.filter(elem => elem.id !== deletedCartId);
-      newCartsData.savedProducts = cartArr.savedProducts.filter(elem => elem.id !== deletedCartId);
+      newCartsData.products = cartArr.products.filter(elem => elem.id !== deletedCartsId[0]);
+      newCartsData.savedProducts = cartArr.savedProducts.filter(elem => elem.id !== deletedCartsId[0]);
       setCart(newCartsData);
     }
-  }, [cartArr, cartCount, cartsData, deletedCartId, dispatch, isDeleteCartSuccess, isGetCartSuccess, isUpdateCartSuccess, prevDeleteSuccess, prevGetSuccess, prevUpdateSuccess, updatedCart])
+  }, [cartArr.products, cartArr.savedProducts, cartCount, deletedCartsId, dispatch, isDeleteCartSuccess, prevDeleteSuccess])
 
 
+  useEffect(() => {
+    if (isPostSessionSuccess) {
+      window.location.href = url
+    }
+  }, [isPostSessionSuccess, url])
   const {products, savedProducts} = cartArr;
+
+  useEffect(() => {
+    if (isGetAddressesSuccess) {
+      if (addresses.length === 0) {
+        notification["error"]({
+          duration: 3,
+          description: "Please Add your Address"
+        });
+      } else {
+        console.log(products)
+        dispatch(addCartProducts(products))
+        dispatch(postSessionRequest({products, addresses}))
+      }
+    }
+  }, [addresses, dispatch, isGetAddressesSuccess, products])
+
   const totalPrice = () => {
     let price = 0;
     let count = 0
@@ -121,7 +149,7 @@ export default function AuthCart() {
                         }}
                       />
                     }
-                    onConfirm={() =>  dispatch(deleteCartRequest({id: product.id, token: localStorage.getItem("token")}))}
+                    onConfirm={() =>  dispatch(deleteCartRequest([product.id]))}
                   >
                     <Button danger >Delete</Button>
                   </Popconfirm>
@@ -159,7 +187,12 @@ export default function AuthCart() {
               margin: "20px 0 20px 0"
             }}>
               <Title level={3}>SubTotal ({totalPrice().count} items): ${totalPrice().price}</Title>
-              <Button type="primary" style={{width: "100%"}} onClick={() => navigate("/signin")}>Proceed to
+              <Button type="primary" style={{width: "100%"}} onClick={() => {
+                dispatch(getAddressesRequest())
+                console.log(addresses)
+
+                
+              }}>Proceed to
                 checkout</Button>
             </Sider>
           ) : null
@@ -203,7 +236,7 @@ export default function AuthCart() {
                     />
                   }
                   onConfirm={
-                    () => dispatch(deleteCartRequest({id: savedProduct.id, token: localStorage.getItem("token")}))
+                    () => dispatch(deleteCartRequest({id: savedProduct.id}))
                   }
                 >
                   <Button danger >Delete</Button>

@@ -33,7 +33,7 @@ const defaultState = {
   cartsData: {},
   updatedCart: {},
   cartCount: 0,
-  deletedCartId: 0,
+  deletedCartsId: [],
   successMessage: "",
   errorMessage: '',
 }
@@ -168,7 +168,7 @@ const reducer = handleActions(
       isDeleteCartRequest: false,
       isDeleteCartSuccess: true,
       isDeleteCartFailure: false,
-      deletedCartId: parseInt(payload),
+      deletedCartsId: payload,
     }),
     [deleteCartFailure]: (
       state,

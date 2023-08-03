@@ -7,6 +7,8 @@ export const getProductsFailure = createAction("GET_PRODUCTS_FAILURE")
 export const changeFilterRequest = createAction("CHANGE_FILTER_REQUEST")
 
 
+export const addCartProducts = createAction("ADD_CART_PRODUCTS")
+
 export const getProductRequest = createAction("GET_PRODUCT_REQUEST")
 export const getProductSuccess = createAction("GET_PRODUCT_SUCCESS")
 export const getProductFailure = createAction("GET_PRODUCT_FAILURE")
@@ -38,3 +40,7 @@ export const deleteProductFailure = createAction("DELETE_PRODUCT_FAILURE")
 export const updateProductRequest = createAction("UPDATE_PRODUCT_REQUEST")
 export const updateProductSuccess = createAction("UPDATE_PRODUCT_SUCCESS")
 export const updateProductFailure = createAction("UPDATE_PRODUCT_FAILURE")
+
+export const deleteImageRequest = createAction("DELETE_IMAGE_REQUEST")
+export const deleteImageSuccess = createAction("DELETE_IMAGE_SUCCESS")
+export const deleteImageFailure = createAction("DELETE_IMAGE_FAILURE")

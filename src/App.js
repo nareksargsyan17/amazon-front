@@ -21,6 +21,8 @@ import Addresses from "./views/Addresses";
 import MyStore from "./views/MyStore";
 import ProductAdd from "./views/ProductAdd";
 import ProductEdit from "./views/ProductEdit";
+import SuccessPurchase from "./views/SuccessPurchase";
+import Orders from "./views/Orders";
 const { Footer } = Layout;
 
 const App = () => {
@@ -43,6 +45,8 @@ const App = () => {
           <Route path="/mystore/edit/:productId" element={<><HeaderBar/><Back/><ProductEdit/></>}/>
           <Route path="/cart" element={<><HeaderBar/><Back/><Cart/></>}/>
           <Route path="/verify/:userId/:token" element={<Verify/>} />
+          <Route path="/order/success" element={<SuccessPurchase/>} />
+          <Route path="/orders" element={<><HeaderBar/><Back/><Orders/></>} />
         </Routes>
         <Footer
           style={{
