@@ -6,7 +6,8 @@ import { postLoginRequest } from "../redux/auth/actions";
 import { useNavigate } from "react-router-dom";
 import {useEffect} from "react";
 import { usePrevious } from "@react-hooks-library/core";
-import {postCartBulkRequest} from "../redux/cart/actions";
+import {getCartRequest, postCartBulkRequest} from "../redux/cart/actions";
+import {instance} from "../configs/axiosInstance";
 const { Title } = Typography;
 
 export default function SignIn() {
@@ -21,12 +22,19 @@ export default function SignIn() {
   const prevSuccess = usePrevious(isPostLoginSuccess);
   const prevFailure = usePrevious(isPostLoginFailure);
 
+  
+  // useEffect(() => {
+  //   if (localStorage.getItem("token")) {
+  //     navigate("/");
+  //   }
+  // }, [navigate])
+  
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      navigate("/");
-    }
+    
     if (isPostLoginSuccess && prevSuccess === false) {
       localStorage.setItem("token", userData.token);
+      let token = localStorage.getItem("token")
+      instance.defaults.headers.common.Authorization = `Bearer ${token}`
       navigate("/");
     }
     if (isPostLoginFailure && prevFailure === false) {
@@ -35,7 +43,7 @@ export default function SignIn() {
         description: "Email or Password is not correct"
       });
     }
-  }, [dispatch, isPostLoginFailure, isPostLoginSuccess, navigate, prevFailure, prevSuccess, userData.token]);
+  }, [dispatch, isPostLoginFailure, isPostLoginSuccess, navigate, prevFailure, prevSuccess, userData]);
 
   const onFinish = (values) => {
     console.log('Received values of form: ', values);

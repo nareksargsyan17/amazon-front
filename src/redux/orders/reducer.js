@@ -2,7 +2,10 @@ import {handleActions} from "redux-actions";
 import {
   postSessionRequest,
   postSessionSuccess,
-  postSessionFailure, postWebhookRequest, postWebhookSuccess, postWebhookFailure
+  postSessionFailure,
+  getOrdersRequest,
+  getOrdersSuccess,
+  getOrdersFailure
 
 } from './actions'
 
@@ -13,7 +16,10 @@ const defaultState = {
   isPostWebhookRequest : false,
   isPostWebhookSuccess : false,
   isPostWebhookFailure : false,
-  data: {},
+  isGetOrdersRequest : false,
+  isGetOrdersSuccess : false,
+  isGetOrdersFailure : false,
+  orders: [],
   url: "",
   errorMessage: '',
 }
@@ -48,32 +54,32 @@ const reducer = handleActions(
       isPostSessionFailure : true,
       errorMessage: payload
     }),
-    [postWebhookRequest]: (
+    [getOrdersRequest]: (
       state,
     ) => ({
       ...state,
-      isPostWebhookRequest : true,
-      isPostWebhookSuccess : false,
-      isPostWebhookFailure : false,
+      isGetOrdersRequest : true,
+      isGetOrdersSuccess : false,
+      isGetOrdersFailure : false,
     }),
-    [postWebhookSuccess]: (
+    [getOrdersSuccess]: (
       state,
       { payload }
     ) => ({
       ...state,
-      isPostWebhookRequest : false,
-      isPostWebhookSuccess : true,
-      isPostWebhookFailure : false,
-      data: payload
+      isGetOrdersRequest : false,
+      isGetOrdersSuccess : true,
+      isGetOrdersFailure : false,
+      orders: payload
     }),
-    [postWebhookFailure]: (
+    [getOrdersFailure]: (
       state,
       { payload }
     ) => ({
       ...state,
-      isPostWebhookRequest : false,
-      isPostWebhookSuccess : false,
-      isPostWebhookFailure : true,
+      isGetOrdersRequest : false,
+      isGetOrdersSuccess : false,
+      isGetOrdersFailure : true,
       errorMessage: payload
     })
   },

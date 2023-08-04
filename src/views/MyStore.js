@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {usePrevious} from "../usePrevious/usePrevious";
 import {deleteProductRequest, getUserProductsRequest} from "../redux/products/actions";
 import {useNavigate} from "react-router-dom";
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 export default function MyStore() {
   const { products, isGetUserProductsRequest, isGetUserProductsSuccess } = useSelector(state => state.products)
@@ -54,13 +54,14 @@ export default function MyStore() {
                     key={elem.id}
                     hoverable
                     size="large"
-                    style={{width: "260px", marginBottom: "30px",  height: "450px"}}
+                    style={{width: "260px", marginBottom: "30px",  minHeight: "450px"}}
                     cover={<img onClick={() => navigate("/" + elem.id)} alt="example" src={`http://localhost:3001/${elem.images[0].path}`}/>}
                   >
                     <Meta title={elem.name} description={elem.brand}/>
                     <Meta title={"$" + elem.price}/>
-
-                    <Space style={{margin: "20px 0", bottom: "0", position: "absolute"}}>
+                    <Title level={5} style={{marginTop: "10px"}}>Bought count:  {elem.bought}</Title>
+                    <Title level={5}>Total earnings:  ${elem.earnings}</Title>
+                    <Space style={{margin: "20px 0", bottom: "0", position: "relative"}}>
                       <Button type="primary" onClick={() => navigate("./edit/" + elem.id)}>Edit</Button>
                       <Popconfirm
                         title="Delete Product from Store?"

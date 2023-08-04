@@ -52,6 +52,7 @@ function* addToCart(action) {
 
 function* getCartProducts() {
   try {
+
     const response = yield instance({
       method: "get",
       url: "/user/cart/get_carts"
@@ -68,11 +69,13 @@ function* getCartProducts() {
 
 function* updateCart (action) {
   try {
+    console.log("action.payload", action.payload)
     const response = yield instance({
       method: "put",
       url: "/user/cart/update/" + action.payload.id,
       data: action.payload.data
     })
+    console.log(response.data.data)
     if (response.status === 200) {
       yield put(updateCartSuccess(response.data.data));
     } else {
@@ -87,8 +90,7 @@ function* deleteCart (action) {
   try {
     const response = yield instance({
       method: "delete",
-      url: "/user/cart/delete",
-      data:  action.payload
+      url: "/user/cart/delete/" + action.payload,
     })
     console.log(response.data.data)
     if (response.status === 200) {

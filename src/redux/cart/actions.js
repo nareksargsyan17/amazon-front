@@ -12,6 +12,9 @@ export const getCartRequest = createAction("GET_CART_REQUEST")
 export const getCartSuccess = createAction("GET_CART_SUCCESS")
 export const getCartFailure = createAction("GET_CART_FAILURE")
 
+export const changeCartsData = createAction("CHANGE_CARTS_DATA")
+
+
 export const updateCartRequest = createAction("UPDATE_CART_REQUEST")
 export const updateCartSuccess = createAction("UPDATE_CART_SUCCESS")
 export const updateCartFailure = createAction("UPDATE_CART_FAILURE")

@@ -33,7 +33,7 @@ export default function SuccessPurchase() {
       title={"Your payment is success"}
       subTitle="Please go to Orders"
       extra={[
-        <Button type="primary" onClick={() => navigate("/signin")}>
+        <Button type="primary" onClick={() => navigate("/orders")}>
           Order
         </Button>
       ]}

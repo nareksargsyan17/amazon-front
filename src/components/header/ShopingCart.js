@@ -3,23 +3,26 @@ import {Space} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import counter from "../../counter/counter";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {getCartRequest} from "../../redux/cart/actions";
 import {changeCartCountRequest} from "../../redux/products/actions";
 import {usePrevious} from "../../usePrevious/usePrevious";
 
 export function ShopingCart() {
   const {
-    cartCount
+    cartCount,
   } = useSelector(state => state.products);
   const {cartsData, isGetCartSuccess} = useSelector(state => state.cart);
   const dispatch = useDispatch()
   const navigate = useNavigate();
-  const prevSucces = usePrevious(isGetCartSuccess)
+  const prevSucces = usePrevious(isGetCartSuccess);
+
+
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      dispatch(getCartRequest(localStorage.getItem("token")));
+      console.log(localStorage.getItem("token"))
+      dispatch(getCartRequest());
     }
 
   }, [dispatch])
@@ -35,6 +38,7 @@ export function ShopingCart() {
     }
   }, [cartsData, dispatch, isGetCartSuccess, prevSucces, cartCount])
 
+
   const onToCart = () => {
     if (localStorage.getItem("token")) {
       navigate("/mycart");
@@ -48,7 +52,8 @@ export function ShopingCart() {
     <Space direction="horizontal" style={{height: "100%", margin: "0 8px"}}>
       <ShoppingCartOutlined style={{color: "white", fontSize: "25px", cursor: "pointer"}} onClick={onToCart}/>
       <span
-        style={{color: "white"}}>{localStorage.getItem("token") ? (cartCount) : (cartCount === 0 || !cartCount ? counter() : cartCount)}</span>
+        style={{color: "white"}}>{cartCount}
+      </span>
     </Space>
   )
 }

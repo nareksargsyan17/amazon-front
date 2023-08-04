@@ -33,6 +33,14 @@ const items = [
       </a>
     ),
   },
+  {
+    key: '4',
+    label: (
+      <a  href="/orders">
+        Orders
+      </a>
+    ),
+  },
 ];
 export function HeaderBar() {
   return (

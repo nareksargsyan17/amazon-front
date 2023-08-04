@@ -2,7 +2,10 @@ import { put, takeLatest } from 'redux-saga/effects'
 import {
   postSessionSuccess,
   postSessionFailure,
-  postSessionRequest, postWebhookSuccess, postWebhookFailure, postWebhookRequest,
+  postSessionRequest,
+  getOrdersSuccess,
+  getOrdersFailure,
+  getOrdersRequest,
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
 
@@ -26,26 +29,26 @@ function* postSession({payload}) {
   }
 }
 
-function* postWebhook() {
+function* getOrders() {
   try {
     const response = yield instance({
-      method: "post",
-      url: `/user/orders/webhook`
+      method: "get",
+      url: `/user/orders/get_orders`
     })
-    console.log(response)
+    console.log(response.data.data)
     if (response.status === 200) {
-      yield put(postWebhookSuccess(response.data.data))
+      yield put(getOrdersSuccess(response.data.data))
     } else {
-      yield put(postWebhookFailure(response.data.message))
+      yield put(getOrdersFailure(response.data.message))
     }
   } catch (error) {
-    yield put(postWebhookFailure(error.message))
+    yield put(getOrdersFailure(error.message))
   }
 }
 
 
 export default function* ordersSaga() {
   yield takeLatest(postSessionRequest, postSession);
-  yield takeLatest(postWebhookRequest, postWebhook);
+  yield takeLatest(getOrdersRequest, getOrders);
 
 }

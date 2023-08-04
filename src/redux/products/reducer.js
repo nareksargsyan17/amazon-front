@@ -72,10 +72,14 @@ const reducer = handleActions(
     [changeCartCountRequest]: (
       state,
       { payload }
-    ) => ({
-      ...state,
-      cartCount: payload
-    }),
+    ) => {
+      return (
+        ({
+          ...state,
+          cartCount: payload
+        })
+      )
+    },
     [addCartProducts]: (
       state,
       { payload }

@@ -1,51 +1,81 @@
-import {Image, Layout, Space, Typography} from "antd";
+import {Empty, Image, Layout, Skeleton, Space, Spin, Typography} from "antd";
 import Card from "antd/es/card/Card";
 import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect} from "react";
+import {getOrdersRequest} from "../redux/orders/actions";
+import {usePrevious} from "../usePrevious/usePrevious";
+import {LoadingOutlined} from "@ant-design/icons";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
 export default function Orders() {
-  const navigate =useNavigate();
+  const dispatch = useDispatch();
+  const {orders, isGetOrdersSuccess} = useSelector(state => state.orders)
+  const navigate = useNavigate();
+  let totalAmount = 0;
+  let totalCount = 0;
+
+  useEffect(() => {
+    dispatch(getOrdersRequest())
+  }, [dispatch]);
+
+  orders.forEach((order) => {
+    totalCount += order.count;
+    totalAmount += (order.count * order.products.price)
+  })
 
 
   return <Content style={{margin: "0 50px", padding: "20px", backgroundColor: "white"}}>
-    <Title style={{textAlign: "center"}}>Orders</Title>
-    <Space wrap>
-      <Card key={1} style={{border: "0.5px solid grey", textAlign: "center"}} className="cart">
-        <Space>
-          <Image
-            width={300}
-            src={"https://www.timeoutdubai.com/cloud/timeoutdubai/2021/09/11/udHvbKwV-IMG-Dubai-UAE-1-1200x800.jpg"}
-          />
-        </Space>
-        <Space direction="vertical" style={{columnGap: 0, textAlign: "left"}}>
-          <Title level={4} onClick={() => navigate("/" + 2)}
-                 style={{cursor: "pointer"}}>Product: {"lala"}</Title>
-          <Text><b>Brand: </b>{"lala"}</Text>
-          <Title level={5}>Price: ${"lala"}</Title>
-          <Text><b>Category: </b>{"lala"}</Text>
-          <Text><b>Size: </b>{"lala"}</Text>
-          <Text><b>Color: </b>{"lala"}</Text>
-        </Space>
-      </Card>
-      <Card key={2} style={{border: "0.5px solid grey", textAlign: "center"}} className="cart">
-        <Space>
-          <Image
-            width={300}
-            src={"https://www.timeoutdubai.com/cloud/timeoutdubai/2021/09/11/udHvbKwV-IMG-Dubai-UAE-1-1200x800.jpg"}
-          />
-        </Space>
-        <Space direction="vertical" style={{columnGap: 0, textAlign: "left"}}>
-          <Title level={4} onClick={() => navigate("/" + 2)}
-                 style={{cursor: "pointer"}}>Product: {"lala"}</Title>
-          <Text><b>Brand: </b>{"lala"}</Text>
-          <Title level={5}>Price: ${"lala"}</Title>
-          <Text><b>Category: </b>{"lala"}</Text>
-          <Text><b>Size: </b>{"lala"}</Text>
-          <Text><b>Color: </b>{"lala"}</Text>
-        </Space>
-      </Card>
+    <Space direction="horizontal" style={{display: "flex", justifyContent: "space-around", margin: "30px 30px"}}>
+      <Space style={{width: "100%"}}><Title style={{textAlign: "center", width: "100%"}}>Orders</Title></Space>
+      <Space direction="vertical">
+        {
+          isGetOrdersSuccess ? (
+            <>
+              <Title level={3}>Total Count:  {totalCount}</Title>
+              <Title level={3}>Total Amount:  ${totalAmount}</Title>
+            </>
+          ) : (
+              <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />)
+        }
+
+      </Space>
+    </Space>
+    <Space wrap style={{width: "100%", display: "flex", justifyContent: "center"}}>
+      {
+        isGetOrdersSuccess ? (
+          orders.length > 0 ? (
+            orders.map(order => (
+              <Card key={order.id} style={{border: "0.5px solid grey", textAlign: "center"}} className="cart">
+                <Space>
+                  <Image
+                    width={180}
+                    src={"http://localhost:3001/" + order.products.images[0].path}
+                  />
+                </Space>
+                <Space direction="vertical" style={{columnGap: 0, textAlign: "left"}}>
+                  <Title level={4} onClick={() => navigate("/" + 2)}
+                         style={{cursor: "pointer"}}>Product: {order.products.name}</Title>
+                  <Text><b>Brand: </b>{order.products.brand}</Text>
+                  <Title level={5}>Price: ${order.products.price}</Title>
+                  <Text><b>Size: </b>{order.size}</Text>
+                  <Text><b>Color: </b>{order.color}</Text>
+                  <Text><b>Count: </b>{order.count}</Text>
+                  <Text><b>Amount: </b>${order.count * order.products.price}</Text>
+                  <Text><b>Order Date: </b>{new Date(order.createdAt).toLocaleString()}</Text>
+                </Space>
+              </Card>
+            ))
+          ) : (
+            <Empty/>
+            )
+        ): (
+          <Spin style={{width: "100%", textAlign: "center"}} indicator={<LoadingOutlined style={{ fontSize: 24, margin: "auto auto", width: "100%" }} spin />} />
+        )
+      }
+
     </Space>
   </Content>
 }

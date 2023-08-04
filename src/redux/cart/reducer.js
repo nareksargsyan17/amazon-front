@@ -11,7 +11,7 @@ import {
   getCartFailure,
   updateCartRequest,
   updateCartSuccess,
-  updateCartFailure, deleteCartRequest, deleteCartSuccess, deleteCartFailure
+  updateCartFailure, deleteCartRequest, deleteCartSuccess, deleteCartFailure, changeCartsData
 } from './actions'
 
 const defaultState = {
@@ -30,16 +30,23 @@ const defaultState = {
   isDeleteCartRequest: false,
   isDeleteCartSuccess: false,
   isDeleteCartFailure: false,
+  isChangedCartsData: false,
   cartsData: {},
   updatedCart: {},
-  cartCount: 0,
-  deletedCartsId: [],
+  deletedCartId: 0,
   successMessage: "",
   errorMessage: '',
 }
 
 const reducer = handleActions(
   {
+    [changeCartsData]: (
+      state,
+      {payload}
+    ) => ({
+      ...state,
+      cartsData: payload
+    }),
     [postCartBulkRequest]: (
       state
     ) => ({
@@ -168,7 +175,7 @@ const reducer = handleActions(
       isDeleteCartRequest: false,
       isDeleteCartSuccess: true,
       isDeleteCartFailure: false,
-      deletedCartsId: payload,
+      deletedCartId: parseInt(payload),
     }),
     [deleteCartFailure]: (
       state,
