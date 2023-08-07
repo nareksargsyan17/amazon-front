@@ -1,10 +1,18 @@
 import {
+  deleteColorsFailure, deleteColorsRequest,
+  deleteColorsSuccess,
   getColorsFailure,
   getColorsRequest,
-  getColorsSuccess
+  getColorsSuccess,
+  postColorsFailure,
+  postColorsRequest,
+  postColorsSuccess,
+  updateColorsFailure,
+  updateColorsRequest,
+  updateColorsSuccess
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
-import {put, takeEvery} from "redux-saga/effects";
+import {put, takeLatest} from "redux-saga/effects";
 
 
 function* getColors() {
@@ -23,7 +31,61 @@ function* getColors() {
   }
 }
 
+function* postColors({payload}) {
+  try {
+    const response = yield instance({
+      method: "post",
+      url: "/admin/colors/add",
+      data: payload
+    })
+    if (response.status === 200) {
+      yield put(postColorsSuccess(response.data.data));
+    } else {
+      yield put(postColorsFailure(response.data.message));
+    }
+  } catch (error) {
+    yield put(postColorsFailure(error.message));
+  }
+}
+
+function* updateColors({payload}) {
+  try {
+    const response = yield instance({
+      method: "put",
+      url: "/admin/colors/update/" + payload.id,
+      data: payload.data
+    })
+    if (response.status === 200) {
+      yield put(updateColorsSuccess(response.data.data));
+    } else {
+      yield put(updateColorsFailure(response.data.message));
+    }
+  } catch (error) {
+    yield put(updateColorsFailure(error.message));
+  }
+}
+
+function* deleteColors({payload}) {
+  try {
+    const response = yield instance({
+      method: "delete",
+      url: "/admin/colors/delete/" + payload
+    })
+    if (response.status === 200) {
+      yield put(deleteColorsSuccess(response.data.data));
+    } else {
+      yield put(deleteColorsFailure(response.data.message));
+    }
+  } catch (error) {
+    yield put(deleteColorsFailure(error.message));
+  }
+}
+
 
 export default function* colorsSaga() {
-  yield takeEvery(getColorsRequest, getColors);
+  yield takeLatest(getColorsRequest, getColors);
+  yield takeLatest(postColorsRequest, postColors);
+  yield takeLatest(updateColorsRequest, updateColors);
+  yield takeLatest(deleteColorsRequest, deleteColors);
+
 }

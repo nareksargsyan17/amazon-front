@@ -2,19 +2,43 @@ import {handleActions} from "redux-actions";
 import {
   getSizesFailure,
   getSizesSuccess,
-  getSizesRequest
+  getSizesRequest,
+  postSizesRequest,
+  postSizesSuccess,
+  postSizesFailure,
+  updateSizesRequest,
+  updateSizesSuccess,
+  updateSizesFailure, changeSize, deleteSizesRequest, deleteSizesSuccess, deleteSizesFailure
 } from './actions'
 
 const defaultState = {
   isGetSizesRequest: false,
   isGetSizesSuccess: false,
   isGetSizesFailure: false,
+  isPostSizesRequest: false,
+  isPostSizesSuccess: false,
+  isPostSizesFailure: false,
+  isUpdateSizesRequest: false,
+  isUpdateSizesSuccess: false,
+  isUpdateSizesFailure: false,
+  isDeleteSizesRequest: false,
+  isDeleteSizesSuccess: false,
+  isDeleteSizesFailure: false,
   sizes: [],
+  updatedSize: {},
+  deletedSizeId: 0,
   errorMessage: '',
 }
 
 const reducer = handleActions(
   {
+    [changeSize]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      sizes: payload
+    }),
     [getSizesRequest]: (
       state
     ) => ({
@@ -43,6 +67,91 @@ const reducer = handleActions(
       isGetSizesFailure: true,
       errorMessage: payload
     }),
+    [postSizesRequest]: (
+      state
+    ) => ({
+      ...state,
+      isPostSizesRequest: true,
+      isPostSizesSuccess: false,
+      isPostSizesFailure: false,
+    }),
+    [postSizesSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isPostSizesRequest: false,
+      isPostSizesSuccess: true,
+      isPostSizesFailure: false,
+      sizes: [...state.sizes, payload],
+    }),
+    [postSizesFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isPostSizesRequest: false,
+      isPostSizesSuccess: false,
+      isPostSizesFailure: true,
+      errorMessage: payload
+    }),
+    [updateSizesRequest]: (
+      state
+    ) => ({
+      ...state,
+      isUpdateSizesRequest: true,
+      isUpdateSizesSuccess: false,
+      isUpdateSizesFailure: false,
+    }),
+    [updateSizesSuccess]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isUpdateSizesRequest: false,
+      isUpdateSizesSuccess: true,
+      isUpdateSizesFailure: false,
+      updatedSize: payload,
+    }),
+    [updateSizesFailure]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isUpdateSizesRequest: false,
+      isUpdateSizesSuccess: false,
+      isUpdateSizesFailure: true,
+      errorMessage: payload
+    }),
+    [deleteSizesRequest]: (
+      state
+    ) => ({
+      ...state,
+      isDeleteSizesRequest: true,
+      isDeleteSizesSuccess: false,
+      isDeleteSizesFailure: false,
+    }),
+    [deleteSizesSuccess]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isDeleteSizesRequest: false,
+      isDeleteSizesSuccess: true,
+      isDeleteSizesFailure: false,
+      deletedSizeId: parseInt(payload),
+    }),
+    [deleteSizesFailure]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isDeleteSizesRequest: false,
+      isDeleteSizesSuccess: false,
+      isDeleteSizesFailure: true,
+      errorMessage: payload
+    }),
+
   },
   defaultState
 );

@@ -7,8 +7,11 @@ import { ShopingCart } from "./ShopingCart";
 import LogoImg from "./LogoImg";
 import Dropdown from "antd/es/dropdown/dropdown";
 import {UserOutlined} from "@ant-design/icons";
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect, useState} from "react";
+import {getUserRequest} from "../../redux/auth/actions";
 
-const items = [
+const userItems = [
   {
     key: '1',
     label: (
@@ -42,7 +45,38 @@ const items = [
     ),
   },
 ];
+
+const adminItems = [
+  {
+    key: '1',
+    label: (
+      <a  href="/admin">
+        Admin panel
+      </a>
+    ),
+  },
+];
+
 export function HeaderBar() {
+  const { role, isGetUserSuccess } = useSelector(state => state.auth)
+  const [userRole, setRole] = useState(role);
+  const [items, setItems] = useState(userItems)
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    dispatch(getUserRequest())
+  }, [dispatch, role])
+
+
+  useEffect(() => {
+    if (isGetUserSuccess) {
+      setRole(role);
+      if (role) {
+        setItems(adminItems)
+      }
+    }
+  }, [isGetUserSuccess, role])
+
   return (
     <Header
       style={{
@@ -58,13 +92,10 @@ export function HeaderBar() {
       <SearchBar/>
       <Space align="center" style={{height: "100%", position: "relative"}}>
         <RegistrationBar/>
-        <ShopingCart/>
-        {
-          localStorage.getItem("token") ? (
+        {!userRole ?  <ShopingCart/> : null}
+        {localStorage.getItem("token") ? (
             <Dropdown
-              menu={{
-                items,
-              }}
+              menu={{items}}
               placement="bottomLeft"
               arrow
             >

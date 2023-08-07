@@ -23,11 +23,11 @@ export default function SignIn() {
   const prevFailure = usePrevious(isPostLoginFailure);
 
   
-  // useEffect(() => {
-  //   if (localStorage.getItem("token")) {
-  //     navigate("/");
-  //   }
-  // }, [navigate])
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, [navigate])
   
   useEffect(() => {
     

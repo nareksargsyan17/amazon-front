@@ -8,7 +8,13 @@ import {
   getVerificationFailure,
   postLoginRequest,
   postLoginSuccess,
-  postLoginFailure, changePasswordRequest, changePasswordSuccess, changePasswordFailure
+  postLoginFailure,
+  changePasswordRequest,
+  changePasswordSuccess,
+  changePasswordFailure,
+  getUserRequest,
+  getUserSuccess,
+  getUserFailure
 } from './actions'
 
 const defaultState = {
@@ -24,9 +30,13 @@ const defaultState = {
   isChangePasswordRequest: false,
   isChangePasswordSuccess: false,
   isChangePasswordFailure: false,
+  isGetUserRequest: false,
+  isGetUserSuccess: false,
+  isGetUserFailure: false,
   userData: {},
   successMessage: "",
   errorMessage: '',
+  role: 0
 }
 
 const reducer = handleActions(
@@ -141,6 +151,34 @@ const reducer = handleActions(
       isChangePasswordRequest: false,
       isChangePasswordSuccess: false,
       isChangePasswordFailure: true,
+      errorMessage: payload
+    }),
+    [getUserRequest]: (
+      state
+    ) => ({
+      ...state,
+      isGetUserRequest: true,
+      isGetUserSuccess: false,
+      isGetUserFailure: false,
+    }),
+    [getUserSuccess]: (
+      state,
+      { payload },
+    ) => ({
+      ...state,
+      isGetUserRequest: false,
+      isGetUserSuccess: true,
+      isGetUserFailure: false,
+      role: payload,
+    }),
+    [getUserFailure]: (
+      state,
+      { payload }
+    ) => ({
+      ...state,
+      isGetUserRequest: false,
+      isGetUserSuccess: false,
+      isGetUserFailure: true,
       errorMessage: payload
     }),
   },

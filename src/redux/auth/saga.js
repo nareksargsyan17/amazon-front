@@ -6,7 +6,12 @@ import {
   getVerificationSuccess,
   getVerificationFailure,
   postLoginSuccess,
-  postLoginFailure, postLoginRequest, changePasswordSuccess, changePasswordFailure, changePasswordRequest
+  postLoginFailure,
+  postLoginRequest,
+  changePasswordSuccess,
+  changePasswordFailure,
+  changePasswordRequest,
+  getUserSuccess, getUserFailure, getUserRequest
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
 import {put, takeEvery} from "redux-saga/effects";
@@ -92,9 +97,28 @@ function* changePassword(action) {
   }
 }
 
+function* getUser() {
+  try {
+    const response = yield instance({
+      method: "get",
+      url: "/admin/user/get/user",
+    })
+    console.log(response)
+    if (response.status === 200) {
+      yield put(getUserSuccess(response.data.data));
+    } else {
+      yield put(getUserFailure(response.data.message));
+    }
+  } catch (error) {
+    yield put(getUserFailure(error.message));
+  }
+}
+
 export default function* authSaga() {
   yield takeEvery(postRegistrationRequest, registration);
   yield takeEvery(getVerificationRequest, verification);
   yield takeEvery(postLoginRequest, login);
   yield takeEvery(changePasswordRequest, changePassword);
+  yield takeEvery(getUserRequest, getUser);
+
 }

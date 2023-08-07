@@ -34,6 +34,7 @@ export default function Product() {
     cartCount,
     product
   } = useSelector(state => state.products);
+  const { role, isGetUserSuccess } = useSelector(state => state.auth)
   const {
     isPostCartSuccess,
     isPostCartFailure
@@ -46,8 +47,8 @@ export default function Product() {
 
   useEffect(() => {
     if (isGetProductSuccess && product?.name) {
-      setColor(product.colors[0].color);
-      setSize(product.sizes[0].size);
+      setColor(product?.colors[0]?.color);
+      setSize(product?.sizes[0]?.size);
     }
   }, [isGetProductSuccess, product?.name, product?.colors, product?.sizes]);
 
@@ -171,10 +172,10 @@ export default function Product() {
                     label="Created By">{product.owner?.firstName + " " + product.owner?.lastName}</Descriptions.Item>
                   <Descriptions.Item label="Category">{product.category.name}</Descriptions.Item>
                   <Descriptions.Item label="Colors" span={2}>{
-                    <Radio.Group onChange={onSetColor} defaultValue={product.colors[0].color}>
-                      {product.colors.map((tag) => (
-                        <Radio.Button key={tag.id} value={tag.color} style={{
-                          backgroundColor: tag.color,
+                    <Radio.Group onChange={onSetColor} defaultValue={product?.colors[0]?.color}>
+                      {product?.colors?.map((tag) => (
+                        <Radio.Button key={tag?.id} value={tag?.color} style={{
+                          backgroundColor: tag?.color,
                           width: "30px",
                           height: " 30px",
                           margin: "3px",
@@ -184,9 +185,9 @@ export default function Product() {
                     </Radio.Group>
                   }</Descriptions.Item>
                   <Descriptions.Item label="Sizes">
-                    <Radio.Group onChange={onSetSize} defaultValue={product.sizes[0].size}>
-                      {product.sizes.map((tag) => (
-                        <Radio.Button key={tag.id} value={tag.size}>{tag.size}</Radio.Button>
+                    <Radio.Group onChange={onSetSize} defaultValue={product?.sizes[0]?.size}>
+                      {product?.sizes?.map((tag) => (
+                        <Radio.Button key={tag?.id} value={tag?.size}>{tag?.size}</Radio.Button>
                       ))}
                     </Radio.Group>
                   </Descriptions.Item>
@@ -194,12 +195,12 @@ export default function Product() {
                     {product.description}
                   </Descriptions.Item>
                 </Descriptions>
-                <div style={{
+                {!role ? <div style={{
                   paddingTop: "20px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "20px"
+                  gap: "20px",
                 }}>
                   <Text>Add to Cart:</Text>
                   <Button type="default" onClick={onToCart}>
@@ -217,7 +218,8 @@ export default function Product() {
                       {value: 4, label: 4},
                     ]}
                   />
-                </div>
+                </div> : null}
+
               </Card>
             </Content>
           ) : (

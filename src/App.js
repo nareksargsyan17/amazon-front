@@ -23,6 +23,7 @@ import ProductAdd from "./views/ProductAdd";
 import ProductEdit from "./views/ProductEdit";
 import SuccessPurchase from "./views/SuccessPurchase";
 import Orders from "./views/Orders";
+import AdminPanel from "./views/AdminPanel";
 const { Footer } = Layout;
 
 const App = () => {
@@ -47,6 +48,7 @@ const App = () => {
           <Route path="/verify/:userId/:token" element={<Verify/>} />
           <Route path="/order/success" element={<SuccessPurchase/>} />
           <Route path="/orders" element={<><HeaderBar/><Back/><Orders/></>} />
+          <Route path="/admin" element={<><HeaderBar/><Back/><AdminPanel/></>} />
         </Routes>
         <Footer
           style={{
