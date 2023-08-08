@@ -20,28 +20,44 @@ export default function AdminPanel() {
     <Space direction="vertical" style={{width: "100%", boxShadow: "0px 0px 3px 3px rgba(0,0,0,0.75)", padding: "40px 0", margin: "50px 0"}}>
       <Title style={{textAlign: "center"}}>Category</Title>
       <Space wrap style={{display: "flex", alignItems: "stretch", justifyContent:"space-around", width: "100%"}}>
-        <CategoryAdd/>
-        <CategoryEdit/>
-        <CategoryDelete/>
+        <Space.Compact size="large" style={{height: "100%"}}>
+          <CategoryAdd/>
+        </Space.Compact>
+        <Space.Compact size="large" style={{height: "100%"}}>
+          <CategoryEdit/>
+        </Space.Compact>
+        <Space.Compact  size="large" style={{height: "100%"}}>
+          <CategoryDelete/>
+        </Space.Compact>
       </Space>
-
     </Space>
     <Space direction="vertical" style={{width: "100%", boxShadow: "0px 0px 3px 3px rgba(0,0,0,0.75)", padding: "40px 0", margin: "50px 0"}}>
       <Title style={{textAlign: "center"}}>Color</Title>
       <Space wrap style={{display: "flex", alignItems: "stretch", justifyContent:"space-around", width: "100%"}}>
-        <ColorAdd/>
-        <ColorEdit/>
-        <ColorDelete/>
+        <Space.Compact size="large" style={{height: "100%"}}>
+          <ColorAdd/>
+        </Space.Compact>
+        <Space.Compact size="large" style={{height: "100%"}}>
+          <ColorEdit/>
+        </Space.Compact>
+        <Space.Compact  size="large" style={{height: "100%"}}>
+          <ColorDelete/>
+        </Space.Compact>
       </Space>
-
     </Space>
 
     <Space direction="vertical" style={{width: "100%", boxShadow: "0px 0px 3px 3px rgba(0,0,0,0.75)", padding: "40px 0", margin: "50px 0"}}>
       <Title style={{textAlign: "center"}}>Size</Title>
       <Space wrap style={{display: "flex", alignItems: "stretch", justifyContent:"space-around", width: "100%"}}>
-        <SizeAdd/>
-        <SizeEdit/>
-        <SizeDelete/>
+        <Space.Compact size="large" style={{height: "100%"}}>
+          <SizeAdd/>
+        </Space.Compact>
+        <Space.Compact size="large" style={{height: "100%"}}>
+          <SizeEdit/>
+        </Space.Compact>
+        <Space.Compact  size="large" style={{height: "100%"}}>
+          <SizeDelete/>
+        </Space.Compact>
       </Space>
 
     </Space>

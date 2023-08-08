@@ -26,6 +26,7 @@ const defaultState = {
   isDeleteSizesFailure: false,
   sizes: [],
   updatedSize: {},
+  createdSize: {},
   deletedSizeId: 0,
   errorMessage: '',
 }
@@ -83,7 +84,7 @@ const reducer = handleActions(
       isPostSizesRequest: false,
       isPostSizesSuccess: true,
       isPostSizesFailure: false,
-      sizes: [...state.sizes, payload],
+      createdSize: payload,
     }),
     [postSizesFailure]: (
       state,

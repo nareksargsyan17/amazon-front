@@ -101,7 +101,7 @@ function* getUser() {
   try {
     const response = yield instance({
       method: "get",
-      url: "/admin/user/get/user",
+      url: "/user/users/get/user",
     })
     console.log(response)
     if (response.status === 200) {

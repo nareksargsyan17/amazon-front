@@ -25,6 +25,7 @@ const defaultState = {
   isDeleteColorsSuccess: false,
   isDeleteColorsFailure: false,
   colors: [],
+  createdColor: "",
   errorMessage: '',
   changedColor: {},
   deletedColorId: {}
@@ -83,7 +84,7 @@ const reducer = handleActions(
       isPostColorsRequest: false,
       isPostColorsSuccess: true,
       isPostColorsFailure: false,
-      colors: [...state.colors, payload],
+      createdColor: payload,
     }),
     [postColorsFailure]: (
       state,
@@ -139,7 +140,7 @@ const reducer = handleActions(
       isDeleteColorsRequest: false,
       isDeleteColorsSuccess: true,
       isDeleteColorsFailure: false,
-      deletedColorId: payload,
+      deletedColorId: parseInt(payload),
     }),
     [deleteColorsFailure]: (
       state,

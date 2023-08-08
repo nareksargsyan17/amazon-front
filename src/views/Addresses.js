@@ -35,7 +35,7 @@ export default function Addresses() {
   const [mainId, setMainId] = useState(0);
 
   useEffect(() => {
-      dispatch(getAddressesRequest(localStorage.getItem("token")));
+      dispatch(getAddressesRequest());
   }, [dispatch])
 
   useEffect(() => {

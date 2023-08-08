@@ -91,6 +91,7 @@ const reducer = handleActions(
       state,
       { payload }
     ) => ({
+      ...state,
       filterState: {...state.filterState, ...payload}
     }),
     [getProductsRequest]: (

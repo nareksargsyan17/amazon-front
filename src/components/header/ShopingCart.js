@@ -12,10 +12,10 @@ export function ShopingCart() {
   const {
     cartCount,
   } = useSelector(state => state.products);
-  const {cartsData, isGetCartSuccess} = useSelector(state => state.cart);
+  const {cartsData, isGetCartSuccess, isUpdateCartSuccess, isDeleteCartSuccess,} = useSelector(state => state.cart);
   const dispatch = useDispatch()
   const navigate = useNavigate();
-  const prevSucces = usePrevious(isGetCartSuccess);
+  const prevSucces = usePrevious(isGetCartSuccess)
 
 
 
@@ -25,6 +25,30 @@ export function ShopingCart() {
     }
 
   }, [dispatch])
+
+  // useEffect(() => {
+  //   if (isUpdateCartSuccess) {
+  //     const {products} = cartsData;
+  //     let count = 0;
+  //     products.forEach(prod => {
+  //       count += prod.count;
+  //     })
+  //     setCount(count)
+  //     // dispatch(changeCartCountRequest(count))
+  //   }
+  // }, [cartsData, dispatch, cartCount, isUpdateCartSuccess])
+
+  // useEffect(() => {
+  //   if (isDeleteCartSuccess) {
+  //     const {products} = cartsData;
+  //     let count = 0;
+  //     products.forEach(prod => {
+  //       count += prod.count;
+  //     })
+  //     setCount(count)
+  //     // dispatch(changeCartCountRequest(count))
+  //   }
+  // }, [cartsData, dispatch, cartCount, isDeleteCartSuccess])
   
   useEffect(() => {
     if (isGetCartSuccess && prevSucces === false) {

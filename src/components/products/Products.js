@@ -44,7 +44,7 @@ export function Products() {
                 key={elem.id}
                 hoverable
                 size="large"
-                style={{width: "260px", marginBottom: "30px", height: "400px", overflow: "hidden"}}
+                style={{width: "260px", marginBottom: "30px", height: "100%", overflow: "hidden"}}
                 cover={<img alt="example" src={`http://localhost:3001/${elem.images[0].path}`} style={{height: "250px", width: "auto"}}/>}
                 onClick={() => {
                   navigate("/" + elem.id)

@@ -24,6 +24,8 @@ import ProductEdit from "./views/ProductEdit";
 import SuccessPurchase from "./views/SuccessPurchase";
 import Orders from "./views/Orders";
 import AdminPanel from "./views/AdminPanel";
+import ColorAdmin from "./views/ColorAdmin";
+import SizeAdmin from "./views/SizeAdmin";
 const { Footer } = Layout;
 
 const App = () => {
@@ -49,6 +51,8 @@ const App = () => {
           <Route path="/order/success" element={<SuccessPurchase/>} />
           <Route path="/orders" element={<><HeaderBar/><Back/><Orders/></>} />
           <Route path="/admin" element={<><HeaderBar/><Back/><AdminPanel/></>} />
+          <Route path="/admin/color" element={<><HeaderBar/><Back/><ColorAdmin/></>} />
+          <Route path="/admin/size" element={<><HeaderBar/><Back/><SizeAdmin/></>} />
         </Routes>
         <Footer
           style={{

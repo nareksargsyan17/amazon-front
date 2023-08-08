@@ -64,8 +64,10 @@ export function HeaderBar() {
   const dispatch = useDispatch();
   
   useEffect(() => {
-    dispatch(getUserRequest())
-  }, [dispatch, role])
+    if (localStorage.getItem("token")) {
+      dispatch(getUserRequest())
+    }
+  }, [dispatch])
 
 
   useEffect(() => {

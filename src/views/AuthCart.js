@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {QuestionCircleOutlined} from "@ant-design/icons";
-import {changeCartsData, deleteCartRequest, getCartRequest, updateCartRequest} from "../redux/cart/actions";
+import { deleteCartRequest, getCartRequest, updateCartRequest} from "../redux/cart/actions";
 import {usePrevious} from "../usePrevious/usePrevious";
 import {addCartProducts, changeCartCountRequest} from "../redux/products/actions";
 import {postSessionRequest} from "../redux/orders/actions";
@@ -15,11 +15,11 @@ const { Title, Text } = Typography;
 const { Meta } = Card
 
 export default function AuthCart() {
-  const dispatch = useDispatch();
   const {cartCount, isGetCartsProductRequest} = useSelector(state => state.products);
   const {cartsData, isUpdateCartSuccess, isDeleteCartSuccess, isGetCartSuccess, updatedCart, deletedCartId} = useSelector(state => state.cart);
   const { isPostSessionSuccess, url } = useSelector(state => state.orders)
   const { addresses, isGetAddressesSuccess } = useSelector(state => state.addresses)
+  const dispatch = useDispatch();
   const [cartArr, setCart] = useState(cartsData);
   const navigate = useNavigate();
   const prevUpdateSuccess = usePrevious(isUpdateCartSuccess);
@@ -33,7 +33,7 @@ export default function AuthCart() {
       dispatch(getCartRequest());
   }, [dispatch])
 
-  
+
   useEffect(() => {
     if (isGetCartSuccess && prevGetSuccess === false) {
       setCart(cartsData);
@@ -51,15 +51,15 @@ export default function AuthCart() {
      if (foundCart) {
        if (updatedCart.type === "saved") {
          newCartsData.products = cartArr.products.filter(elem => elem.id !== updatedCart.id);
-         cartArr.savedProducts.push(cartArr.products.find(elem => elem.id === updatedCart.id));
-         newCartsData.savedProducts = cartArr.savedProducts;
+         newCartsData.savedProducts = [...cartArr.savedProducts];
+         newCartsData.savedProducts.push(cartArr.products.find(elem => elem.id === updatedCart.id));
          newCartCount = cartCount - foundCart.count;
        } else {
+         newCartsData.savedProducts = [...cartArr.savedProducts];
          newCartsData.products = cartArr.products.map(elem => {
            if (elem.id === updatedCart.id && elem.count !== updatedCart.count) {
              newCartCount = cartCount - elem.count + updatedCart.count
-             elem.count = updatedCart.count;
-             console.log(elem.count)
+             return {...elem, count: updatedCart.count}
            }
            return elem;
          });
@@ -67,13 +67,12 @@ export default function AuthCart() {
      }
      if (foundSavedCart){
        newCartsData.savedProducts = cartArr.savedProducts.filter(elem => elem.id !== updatedCart.id);
-       cartArr.products.push(cartArr.savedProducts.find(elem => elem.id === updatedCart.id));
-       newCartsData.products = cartArr.products;
+       newCartsData.products = [...cartArr.products];
+       newCartsData.products.push(cartArr.savedProducts.find(elem => elem.id === updatedCart.id));
        newCartCount = cartCount + foundSavedCart.count
      }
      setCart(newCartsData);
      dispatch(changeCartCountRequest(newCartCount))
-
    }
 
   }, [cartArr, cartCount, dispatch, isUpdateCartSuccess, prevUpdateSuccess, updatedCart])

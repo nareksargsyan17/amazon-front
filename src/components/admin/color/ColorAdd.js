@@ -30,7 +30,7 @@ export default function ColorAdd() {
   }
 
 
-  return <Form style={{border: "1px solid grey", padding: "60px", borderRadius: "10px"}}
+  return <Form style={{border: "1px solid grey", padding: "100px", borderRadius: "10px"}}
                onFinish={onFinish}
   >
     <Title level={4} style={{textAlign: "center", marginBottom: "15px"}}>Add new Color</Title>

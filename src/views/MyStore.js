@@ -35,17 +35,20 @@ export default function MyStore() {
       <Space
         style={{display: "flex", justifyContent: "space-between", margin: "30px 0"}}
       >
-        <Switch
-          checkedChildren={<CheckOutlined />}
-          unCheckedChildren={<CloseOutlined />}
-          defaultChecked={isPublished}
-          onChange={() => setPublish(!isPublished)}
-        />
+        <Space wrap style={{display: "flex", alignItems: "stretch"}}>
+          <Switch
+            checkedChildren={<CheckOutlined />}
+            unCheckedChildren={<CloseOutlined />}
+            defaultChecked={isPublished}
+            onChange={() => setPublish(!isPublished)}
+          />
+        </Space>
+
         <Button type="primary" onClick={() => navigate("./add")}>Add Product<PlusOutlined /></Button>
       </Space>
 
       <Skeleton active loading={isGetUserProductsRequest}>
-        <Space wrap>
+        <Space wrap style={{display: "flex", alignItems:"stretch"}}>
           {
             productsList?.rows?.length > 0 ?
               (productsList.rows.map((elem) => {
@@ -54,7 +57,7 @@ export default function MyStore() {
                     key={elem.id}
                     hoverable
                     size="large"
-                    style={{width: "260px", marginBottom: "30px",  minHeight: "450px"}}
+                    style={{width: "260px", marginBottom: "30px", height: "100%", overflow: "hidden"}}
                     cover={<img onClick={() => navigate("/" + elem.id)} alt="example" src={`http://localhost:3001/${elem.images[0].path}`}/>}
                   >
                     <Meta title={elem.name} description={elem.brand}/>

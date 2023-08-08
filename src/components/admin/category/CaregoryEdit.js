@@ -42,7 +42,7 @@ export default function CategoryEdit() {
   }, [dispatch, errorMessage, isUpdateCategoriesFailure, isUpdateCategoriesSuccess])
 
   return <>
-    <Space direction="vertical" style={{ border: "1px solid grey", padding: "60px", borderRadius: "10px"}}>
+    <Space direction="vertical" style={{ border: "1px solid grey", padding: "60px", borderRadius: "10px", width: "100%"}}>
       <Title level={4} style={{textAlign: "center", marginBottom: "15px"}}>Edit Category</Title>
           <Space wrap>
             <Title level={5}>Select Category for change</Title>

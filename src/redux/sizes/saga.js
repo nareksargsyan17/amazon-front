@@ -10,7 +10,7 @@ import {
   updateSizesRequest, deleteSizesSuccess, deleteSizesFailure, deleteSizesRequest
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
-import {put, takeEvery, takeLatest} from "redux-saga/effects";
+import {put, takeLatest} from "redux-saga/effects";
 
 
 function* getSizes() {
@@ -36,6 +36,7 @@ function* postSizes({ payload }) {
       url: "/admin/sizes/add",
       data: payload
     })
+    console.log(response.data.data)
     if (response.status === 200) {
       yield put(postSizesSuccess(response.data.data));
     } else {

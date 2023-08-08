@@ -1,5 +1,5 @@
 import {Content} from "antd/es/layout/layout";
-import {Button, Form, Input, InputNumber, notification, Select, Space, Switch, Typography} from "antd";
+import {Button, ColorPicker, Form, Input, InputNumber, notification, Select, Space, Switch, Typography} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import Upload from "antd/es/upload/Upload";
 import {DownOutlined, UploadOutlined} from "@ant-design/icons";
@@ -140,7 +140,7 @@ export default function ProductAdd() {
           rules={[{ required: true, message: 'Please select your Product colors!', type: 'array' }]}
         >
           <Select mode="multiple" placeholder="Please select Product colors">
-            {colors.map(color => <Option key={color.id} value={color.id}>{color.color}</Option>)}
+            {colors.map(color => <Option key={color.id} value={color.id}><ColorPicker size="small" value={color.color} disabled={true}/>  {color.color}</Option>)}
           </Select>
         </Form.Item>
         <Form.Item
@@ -170,7 +170,7 @@ export default function ProductAdd() {
             <Button icon={<UploadOutlined />}>Click to upload</Button>
           </Upload>
         </Form.Item>
-        <Form.Item name="isPublished" label="Switch" valuePropName="checked">
+        <Form.Item name="isPublished" label="isPublished" valuePropName="checked">
           <Switch checked={true}/>
         </Form.Item>
         <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
