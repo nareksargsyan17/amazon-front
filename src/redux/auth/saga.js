@@ -25,7 +25,6 @@ function* registration(action) {
       url: "/guest/users/registration",
       data : action.payload
     })
-    console.log(response)
     if (response.status === 200) {
       yield put(postRegistrationSuccess(response.data.successMessage));
     } else {

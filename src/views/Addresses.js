@@ -1,18 +1,29 @@
-import {Layout, Typography, Radio, Empty, Skeleton, notification, Button, Popconfirm, Space, Input} from "antd";
-import {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {
+  Layout,
+  Typography,
+  Radio,
+  Empty,
+  Skeleton,
+  notification,
+  Button,
+  Popconfirm,
+  Space,
+  Input
+} from "antd";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   changeAddressRequest,
   deleteAddressRequest,
   getAddressesRequest,
   postAddressRequest
 } from "../redux/addresses/actions";
-import {usePrevious} from "../usePrevious/usePrevious";
+import { usePrevious } from "../usePrevious/usePrevious";
 import "../App.css";
-import {CloseOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
+import { CloseOutlined, PlusOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
 const { Content } = Layout;
-const {Title} = Typography
+const { Title } = Typography;
 
 export default function Addresses() {
   const {
@@ -36,14 +47,14 @@ export default function Addresses() {
 
   useEffect(() => {
       dispatch(getAddressesRequest());
-  }, [dispatch])
+  }, [dispatch]);
 
   useEffect(() => {
     if (isGetAddressesSuccess && prevGetSuccess === false && addresses.length > 0) {
-      setAddresses(addresses)
-      const address = addresses.find(address => address.isMain)
+      setAddresses(addresses);
+      const address = addresses.find(address => address.isMain);
       if (address) {
-        setMainId(address.id)
+        setMainId(address.id);
       }
     }
   }, [addresses, dispatch, isGetAddressesSuccess, prevGetSuccess]);
@@ -70,7 +81,7 @@ export default function Addresses() {
       });
       setAddresses(addresses)
     }
-  }, [addresses, addressesArr, dispatch, isChangeAddressSuccess, isDeleteAddressSuccess, isMainId, isPostAddressSuccess, prevChangedSuccess, prevDeleteSuccess, prevPostSuccess])
+  }, [addresses, addressesArr, dispatch, isChangeAddressSuccess, isDeleteAddressSuccess, isMainId, isPostAddressSuccess, prevChangedSuccess, prevDeleteSuccess, prevPostSuccess]);
   
   const onChange = (e) => {
     dispatch(changeAddressRequest({id: e.target.value, token: localStorage.getItem("token")}))

@@ -4,9 +4,9 @@
 
 .cart .ant-card-body {
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
-    gap: 40px;
+    gap: 200px;
+    width: 100%;
 }
 
 .address-radio> span:last-child {
@@ -15,3 +15,9 @@
     padding-left: 30px;
     justify-content: space-between;
 }
+
+.ant-card-cover {
+    display: flex;
+    justify-content: center;
+}
+

@@ -1,6 +1,5 @@
-import {Button, Space} from "antd";
-import {useNavigate} from 'react-router-dom';
-import {useEffect} from "react";
+import { Button, Space } from "antd";
+import { useNavigate } from 'react-router-dom';
 
 
 export function RegistrationBar() {

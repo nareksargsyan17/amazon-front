@@ -6,7 +6,6 @@ import { postLoginRequest } from "../redux/auth/actions";
 import { useNavigate } from "react-router-dom";
 import {useEffect} from "react";
 import { usePrevious } from "@react-hooks-library/core";
-import {getCartRequest, postCartBulkRequest} from "../redux/cart/actions";
 import {instance} from "../configs/axiosInstance";
 const { Title } = Typography;
 

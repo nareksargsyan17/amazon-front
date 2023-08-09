@@ -36,7 +36,7 @@ const defaultState = {
   userData: {},
   successMessage: "",
   errorMessage: '',
-  role: 0
+  role: null
 }
 
 const reducer = handleActions(

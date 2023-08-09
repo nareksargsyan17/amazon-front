@@ -1,11 +1,9 @@
-import {Button, ColorPicker, Input, notification, Popconfirm, Skeleton, Space, Table} from "antd";
+import {Button, Input, notification, Popconfirm, Skeleton, Space, Table} from "antd";
 import {DeleteOutlined, EditOutlined, QuestionCircleOutlined, SaveOutlined} from "@ant-design/icons";
-import {changeColor, deleteColorsRequest, postColorsRequest} from "../redux/colors/actions";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {usePrevious} from "../usePrevious/usePrevious";
 import {
-  changeSize,
   deleteSizesRequest,
   getSizesRequest,
   postSizesRequest,
@@ -14,8 +12,11 @@ import {
 import {Content} from "antd/lib/layout/layout";
 import Title from "antd/es/typography/Title";
 import Modal from "antd/es/modal/Modal";
+import {useNavigate} from "react-router-dom";
+import {getUserRequest} from "../redux/auth/actions";
 
 export default function SizeAdmin() {
+  const { role, isGetUserSuccess, isGetUserFailure, isGetUserRequest } = useSelector(state => state.auth);
   const {
     errorMessage,
     isUpdateSizesSuccess,
@@ -30,14 +31,35 @@ export default function SizeAdmin() {
     isPostSizesSuccess,
     isPostSizesFailure,
     updatedSize } = useSelector(state => state.sizes);
-
   const dispatch = useDispatch();
   const [sizesArr, setSizesArr] = useState([]);
+  const navigate = useNavigate();
   const [defSize, setSize] = useState(createdSize)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const prevDeleteSizeSuccess = usePrevious(isDeleteSizesSuccess);
   const prevUpdateSize = usePrevious(isUpdateSizesSuccess);
   const prevPostSizeSuccess = usePrevious(isPostSizesSuccess);
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      dispatch(getUserRequest());
+    } else {
+      navigate("/notfound");
+    }
+  }, [dispatch, navigate])
+
+
+  useEffect(() => {
+    if (isGetUserSuccess) {
+      if (!role) {
+        navigate("/notfound");
+      }
+    }
+    
+    if (isGetUserFailure) {
+      navigate("/notfound");
+    }
+  }, [isGetUserFailure, isGetUserSuccess, navigate, role])
 
   useEffect(() => {
     dispatch(getSizesRequest());
@@ -169,37 +191,39 @@ export default function SizeAdmin() {
     </>
   }))
 
-  return <Content style={{padding: "0 50px"}}>
-    <Title style={{textAlign: "left", margin: "60px 0",}}>Size CRUD</Title>
-    <Space wrap style={{width: "100%", display:"flex", justifyContent:"end"}}>
-      <Button type="primary" onClick={() => setIsModalOpen(true)}>+ Add Size</Button>
-      <>
-        <Modal title="Add new Size"
-               open={isModalOpen}
-               onOk={() => {
-                 console.log(defSize)
-                 dispatch(postSizesRequest({size: defSize}))
-                 setIsModalOpen(false);
-               }}
-               onCancel={() => setIsModalOpen(false)}
-               okText="Add"
-        >
-          <Content style={{
-            width: "400px",
-            display: "flex",
-            justifyContent: "center",
-            padding: "40px"
-          }}>
-            <Input type="text" placeholder="Type new Size" required={true} onChange={(e) => setSize(e.target.value)}/>
-          </Content>
-        </Modal>
-      </>
-    </Space>
-    <Skeleton active loading={isGetSizesRequest}>
-      <Table
-        columns={columns}
-        dataSource={data}
-      />
-    </Skeleton>
-  </Content>
+  return <Skeleton active loading={isGetUserRequest}>
+    <Content style={{padding: "0 50px"}}>
+      <Title style={{textAlign: "left", margin: "60px 0",}}>Size CRUD</Title>
+      <Space wrap style={{width: "100%", display:"flex", justifyContent:"end"}}>
+        <Button type="primary" onClick={() => setIsModalOpen(true)}>+ Add Size</Button>
+        <>
+          <Modal title="Add new Size"
+                 open={isModalOpen}
+                 onOk={() => {
+                   console.log(defSize)
+                   dispatch(postSizesRequest({size: defSize}))
+                   setIsModalOpen(false);
+                 }}
+                 onCancel={() => setIsModalOpen(false)}
+                 okText="Add"
+          >
+            <Content style={{
+              width: "400px",
+              display: "flex",
+              justifyContent: "center",
+              padding: "40px"
+            }}>
+              <Input type="text" placeholder="Type new Size" required={true} onChange={(e) => setSize(e.target.value)}/>
+            </Content>
+          </Modal>
+        </>
+      </Space>
+      <Skeleton active loading={isGetSizesRequest}>
+        <Table
+          columns={columns}
+          dataSource={data}
+        />
+      </Skeleton>
+    </Content>
+  </Skeleton>
 }

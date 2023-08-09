@@ -1,18 +1,17 @@
-import {ShoppingCartOutlined} from "@ant-design/icons";
-import {Space} from "antd";
-import {useDispatch, useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
-import counter from "../../counter/counter";
-import {useEffect, useState} from "react";
-import {getCartRequest} from "../../redux/cart/actions";
-import {changeCartCountRequest} from "../../redux/products/actions";
-import {usePrevious} from "../../usePrevious/usePrevious";
+import { ShoppingCartOutlined } from "@ant-design/icons";
+import {Badge, Space} from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { getCartRequest } from "../../redux/cart/actions";
+import { changeCartCountRequest } from "../../redux/products/actions";
+import { usePrevious } from "../../usePrevious/usePrevious";
 
 export function ShopingCart() {
   const {
     cartCount,
   } = useSelector(state => state.products);
-  const {cartsData, isGetCartSuccess, isUpdateCartSuccess, isDeleteCartSuccess,} = useSelector(state => state.cart);
+  const {cartsData, isGetCartSuccess,} = useSelector(state => state.cart);
   const dispatch = useDispatch()
   const navigate = useNavigate();
   const prevSucces = usePrevious(isGetCartSuccess)
@@ -26,30 +25,6 @@ export function ShopingCart() {
 
   }, [dispatch])
 
-  // useEffect(() => {
-  //   if (isUpdateCartSuccess) {
-  //     const {products} = cartsData;
-  //     let count = 0;
-  //     products.forEach(prod => {
-  //       count += prod.count;
-  //     })
-  //     setCount(count)
-  //     // dispatch(changeCartCountRequest(count))
-  //   }
-  // }, [cartsData, dispatch, cartCount, isUpdateCartSuccess])
-
-  // useEffect(() => {
-  //   if (isDeleteCartSuccess) {
-  //     const {products} = cartsData;
-  //     let count = 0;
-  //     products.forEach(prod => {
-  //       count += prod.count;
-  //     })
-  //     setCount(count)
-  //     // dispatch(changeCartCountRequest(count))
-  //   }
-  // }, [cartsData, dispatch, cartCount, isDeleteCartSuccess])
-  
   useEffect(() => {
     if (isGetCartSuccess && prevSucces === false) {
       const {products} = cartsData;
@@ -73,10 +48,9 @@ export function ShopingCart() {
 
   return (
     <Space direction="horizontal" style={{height: "100%", margin: "0 8px"}}>
-      <ShoppingCartOutlined style={{color: "white", fontSize: "25px", cursor: "pointer"}} onClick={onToCart}/>
-      <span
-        style={{color: "white"}}>{cartCount}
-      </span>
+      <Badge count={cartCount} color={"rgb(239 165 0)"}>
+        <ShoppingCartOutlined style={{color: "white", fontSize: "25px", cursor: "pointer"}} onClick={onToCart}/>
+      </Badge>
     </Space>
   )
 }

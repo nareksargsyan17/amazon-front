@@ -6,10 +6,10 @@ import { RegistrationBar } from "./RegistrationBar";
 import { ShopingCart } from "./ShopingCart";
 import LogoImg from "./LogoImg";
 import Dropdown from "antd/es/dropdown/dropdown";
-import {UserOutlined} from "@ant-design/icons";
-import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useState} from "react";
-import {getUserRequest} from "../../redux/auth/actions";
+import { UserOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { getUserRequest } from "../../redux/auth/actions";
 
 const userItems = [
   {
@@ -50,8 +50,24 @@ const adminItems = [
   {
     key: '1',
     label: (
-      <a  href="/admin">
-        Admin panel
+      <a  href="/admin/category">
+        Category CRUD
+      </a>
+    ),
+  },
+  {
+    key: '2',
+    label: (
+      <a  href="/admin/color">
+        Color CRUD
+      </a>
+    ),
+  },
+  {
+    key: '3',
+    label: (
+      <a  href="/admin/size">
+        Size CRUD
       </a>
     ),
   },

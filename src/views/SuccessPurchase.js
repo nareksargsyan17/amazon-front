@@ -1,24 +1,8 @@
-import {Button, Result, Skeleton} from "antd";
-import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
-import {useNavigate} from "react-router-dom";
-import {getCartRequest} from "../redux/cart/actions";
+import { Button, Result, Skeleton } from "antd";
+import { useNavigate } from "react-router-dom";
 
 export default function SuccessPurchase() {
-  const { cartsData } = useSelector(state => state.cart);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getCartRequest());
-
-  }, [dispatch])
-  
-  useEffect(() => {
-    if (cartsData) {
-      console.log(cartsData)
-    }
-  }, [cartsData])
 
   return <Skeleton active loading={false} style={{
     height: "100vh",

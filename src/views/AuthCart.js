@@ -1,14 +1,26 @@
-import {Button, Card, Empty, Image, Layout, notification, Popconfirm, Select, Skeleton, Space, Typography} from "antd";
+import {
+  Button,
+  Card, ColorPicker,
+  Empty,
+  Image,
+  Layout,
+  notification,
+  Popconfirm,
+  Select,
+  Skeleton,
+  Space,
+  Typography
+} from "antd";
 import "../App.css";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {QuestionCircleOutlined} from "@ant-design/icons";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { deleteCartRequest, getCartRequest, updateCartRequest} from "../redux/cart/actions";
-import {usePrevious} from "../usePrevious/usePrevious";
-import {addCartProducts, changeCartCountRequest} from "../redux/products/actions";
-import {postSessionRequest} from "../redux/orders/actions";
-import {getAddressesRequest} from "../redux/addresses/actions";
+import { usePrevious } from "../usePrevious/usePrevious";
+import { addCartProducts, changeCartCountRequest } from "../redux/products/actions";
+import { postSessionRequest } from "../redux/orders/actions";
+import { getAddressesRequest } from "../redux/addresses/actions";
 
 const { Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -137,20 +149,22 @@ export default function AuthCart() {
           <Space direction="vertical" style={{width: "100%"}}>
             {products?.length > 0 ? products.map(product => (
               <Card key={product.id} style={{border: "0.5px solid grey", textAlign: "center"}} className="cart">
-                <Space>
-                  <Image
-                    width={300}
-                    src={`http://localhost:3001/${product.image}`}
-                  />
-                </Space>
-                <Space direction="vertical" style={{columnGap: 0, textAlign: "left"}}>
-                  <Title level={4} onClick={() => navigate("/" + product.productId)}
-                         style={{cursor: "pointer"}}>Product: {product.name}</Title>
-                  <Text><b>Brand: </b>{product.brand}</Text>
-                  <Title level={5}>Price: ${product.price}</Title>
-                  <Text><b>Category: </b>{product.category}</Text>
-                  <Text><b>Size: </b>{product.size}</Text>
-                  <Text><b>Color: </b>{product.color}</Text>
+                <Space style={{width: "100%"}}>
+                  <Space style={{marginRight: "50px"}}>
+                    <Image
+                      width={300}
+                      src={`http://localhost:3001/${product.image}`}
+                    />
+                  </Space>
+                  <Space direction="vertical" style={{columnGap: 0, textAlign: "left"}}>
+                    <Title level={4} onClick={() => navigate("/" + product.productId)}
+                           style={{cursor: "pointer"}}>Product: {product.name}</Title>
+                    <Text><b>Brand: </b>{product.brand}</Text>
+                    <Title level={5}>Price: ${product.price}</Title>
+                    <Text><b>Category: </b>{product.category}</Text>
+                    <Text><b>Size: </b>{product.size}</Text>
+                    <Text style={{display: "flex", alignItems: "center", columnGap: "5px"}}><b>Color:</b><ColorPicker disabled={true} defaultValue={product.color}/></Text>
+                  </Space>
                 </Space>
                 <Space>
                   <Popconfirm
@@ -229,7 +243,7 @@ export default function AuthCart() {
                 <Text>{savedProduct.brand}</Text>
                 <Text><b>Price: </b> ${savedProduct.price}</Text>
                 <Text><b>Category: </b>{savedProduct.category}</Text>
-                <Text><b>Color: </b> {savedProduct.color}</Text>
+                <Text style={{display: "flex", alignItems: "center", columnGap: "5px"}}><b>Color: </b><ColorPicker disabled={true} defaultValue={savedProduct.color}/></Text>
                 <Text><b>Size: </b> {savedProduct.size}</Text>
                 <Button type="default" style={{width: "100%"}} onClick={
                   () => {

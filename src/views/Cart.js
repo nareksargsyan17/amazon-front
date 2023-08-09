@@ -1,4 +1,4 @@
-import {Button, Card, Empty, Image, Layout, Popconfirm, Select, Skeleton, Space, Typography} from "antd";
+import {Button, Card, ColorPicker, Empty, Image, Layout, Popconfirm, Select, Skeleton, Space, Typography} from "antd";
 import "../App.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,23 +50,25 @@ export default function Cart() {
         <Content style={{textAlign: "center", padding: "20px 20px 20px 0"}}>
           <Title style={{backgroundColor: "white", padding: "20px 0", border: "0.5px solid grey", borderRadius: "10px"}}>Shopping
             Cart</Title>
-          <Space direction="vertical" style={{width: "100%"}}>
+          <Space direction="vertical" style={{width: "100%", display: "flex", flexDirection: "column", alignItems: "stretch"}}>
             {products?.length > 0 ? products.map(product => (
               <Card key={product.id} style={{border: "0.5px solid grey", textAlign: "center"}} className="cart">
-                <Space>
-                  <Image
-                    width={300}
-                    src={`http://localhost:3001/${product.image}`}
-                  />
-                </Space>
-                <Space direction="vertical" style={{columnGap: 0, textAlign: "left"}}>
-                  <Title level={4} onClick={() => navigate("/" + product.id)}
-                         style={{cursor: "pointer"}}>Product: {product.name}</Title>
-                  <Text><b>Brand: </b>{product.brand}</Text>
-                  <Title level={5}>Price: ${product.price}</Title>
-                  <Text><b>Category: </b>{product.category.name}</Text>
-                  <Text><b>Size: </b>{product.size}</Text>
-                  <Text><b>Color: </b>{product.color}</Text>
+                <Space style={{width: "100%"}}>
+                  <Space style={{marginRight: "50px"}}>
+                    <Image
+                      width={300}
+                      src={`http://localhost:3001/${product.image}`}
+                    />
+                  </Space>
+                  <Space direction="vertical" style={{columnGap: 0, textAlign: "left"}}>
+                    <Title level={4} onClick={() => navigate("/" + product.id)}
+                           style={{cursor: "pointer"}}>Product: {product.name}</Title>
+                    <Text><b>Brand: </b>{product.brand}</Text>
+                    <Title level={5}>Price: ${product.price}</Title>
+                    <Text><b>Category: </b>{product.category}</Text>
+                    <Text><b>Size: </b>{product.size}</Text>
+                    <Text style={{display: "flex", alignItems: "center", columnGap: "5px"}}><b>Color: </b><ColorPicker disabled={true} defaultValue={product.color}/></Text>
+                  </Space>
                 </Space>
                 <Space>
                   <Popconfirm
@@ -164,8 +166,8 @@ export default function Cart() {
                 <Meta title={savedProduct.name} />
                 <Text>{savedProduct.brand}</Text>
                 <Text><b>Price: </b> ${savedProduct.price}</Text>
-                <Text><b>Category: </b>{savedProduct.category.name}</Text>
-                <Text><b>Color: </b> {savedProduct.color}</Text>
+                <Text><b>Category: </b>{savedProduct.category}</Text>
+                <Text style={{display: "flex", alignItems: "center", columnGap: "5px"}}><b>Color: </b> <ColorPicker disabled={true} defaultValue={savedProduct.color}/></Text>
                 <Text><b>Size: </b> {savedProduct.size}</Text>
                 <Button type="default" style={{width: "100%"}} onClick={
                   () => {

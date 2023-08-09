@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {usePrevious} from "../usePrevious/usePrevious";
 import {deleteProductRequest, getUserProductsRequest} from "../redux/products/actions";
 import {useNavigate} from "react-router-dom";
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 export default function MyStore() {
   const { products, isGetUserProductsRequest, isGetUserProductsSuccess } = useSelector(state => state.products)
@@ -58,7 +58,7 @@ export default function MyStore() {
                     hoverable
                     size="large"
                     style={{width: "260px", marginBottom: "30px", height: "100%", overflow: "hidden"}}
-                    cover={<img onClick={() => navigate("/" + elem.id)} alt="example" src={`http://localhost:3001/${elem.images[0].path}`}/>}
+                    cover={<img onClick={() => navigate("/" + elem.id)} alt="example" src={`http://localhost:3001/${elem.images[0].path}`} style={{height: "250px", width: "auto"}}/>}
                   >
                     <Meta title={elem.name} description={elem.brand}/>
                     <Meta title={"$" + elem.price}/>

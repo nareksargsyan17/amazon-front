@@ -11,9 +11,12 @@ import {
 } from "../redux/colors/actions";
 import {usePrevious} from "../usePrevious/usePrevious";
 import Modal from "antd/es/modal/Modal";
+import {useNavigate} from "react-router-dom";
+import {getUserRequest} from "../redux/auth/actions";
 const { Content } = Layout;
 
 export default function ColorAdmin() {
+  const { role, isGetUserSuccess, isGetUserFailure, isGetUserRequest } = useSelector(state => state.auth);
   const {
     isGetColorsSuccess,
     isGetColorsRequest,
@@ -30,14 +33,32 @@ export default function ColorAdmin() {
     createdColor,
     changedColor } = useSelector(state => state.colors);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [defColor, setDefColor] = useState("transparent");
   const [colorsArr, setColorsArr] = useState([]);
   const prevUpdateColor = usePrevious(isUpdateColorsSuccess);
-  const prevCreateColorSuccess = usePrevious(isPostColorsSuccess);
-
-  const prevDeleteColorSuccess = usePrevious(isDeleteColorsSuccess);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const prevCreateColorSuccess = usePrevious(isPostColorsSuccess);
+  const prevDeleteColorSuccess = usePrevious(isDeleteColorsSuccess);
 
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      dispatch(getUserRequest());
+    } else {
+      navigate("/notfound");
+    }
+  }, [dispatch, navigate])
+
+  useEffect(() => {
+    if (isGetUserSuccess) {
+      if (!role) {
+        navigate("/notfound");
+      }
+    }
+    if (isGetUserFailure) {
+      navigate("/notfound");
+    }
+  }, [isGetUserFailure, isGetUserSuccess, navigate, role])
 
   useEffect(() => {
     dispatch(getColorsRequest())
@@ -161,37 +182,38 @@ export default function ColorAdmin() {
     </>
     }))
 
-  return <Content style={{padding: "0 50px"}}>
-    <Title style={{textAlign: "left", margin: "60px 0",}}>Color CRUD</Title>
-    <Space wrap style={{width: "100%", display:"flex", justifyContent:"end"}}>
-      <Button type="primary" onClick={() => setIsModalOpen(true)}>+ Add Color</Button>
-      <>
-        <Modal title="Choose Color"
-               open={isModalOpen}
-               onOk={() => {
-                 dispatch(postColorsRequest({color: defColor}))
-                 setIsModalOpen(false);
-               }}
-               onCancel={() => setIsModalOpen(false)}
-               okText="Add"
-        >
-          <Content style={{
-            width: "400px",
-            display: "flex",
-            justifyContent: "center",
-            padding: "40px"
-          }}>
-            <ColorPicker onChangeComplete={(value) => setDefColor(value.toHexString())} showText/>
-          </Content>
-        </Modal>
-      </>
-    </Space>
-    <Skeleton active loading={isGetColorsRequest}>
-      <Table
-        columns={columns}
-        dataSource={data}
-      />
-    </Skeleton>
-
-  </Content>
+  return <Skeleton active loading={isGetUserRequest}>
+    <Content style={{padding: "0 50px"}}>
+      <Title style={{textAlign: "left", margin: "60px 0",}}>Color CRUD</Title>
+      <Space wrap style={{width: "100%", display:"flex", justifyContent:"end"}}>
+        <Button type="primary" onClick={() => setIsModalOpen(true)}>+ Add Color</Button>
+        <>
+          <Modal title="Choose Color"
+                 open={isModalOpen}
+                 onOk={() => {
+                   dispatch(postColorsRequest({color: defColor}))
+                   setIsModalOpen(false);
+                 }}
+                 onCancel={() => setIsModalOpen(false)}
+                 okText="Add"
+          >
+            <Content style={{
+              width: "400px",
+              display: "flex",
+              justifyContent: "center",
+              padding: "40px"
+            }}>
+              <ColorPicker onChangeComplete={(value) => setDefColor(value.toHexString())} showText/>
+            </Content>
+          </Modal>
+        </>
+      </Space>
+      <Skeleton active loading={isGetColorsRequest}>
+        <Table
+          columns={columns}
+          dataSource={data}
+        />
+      </Skeleton>
+    </Content>
+  </Skeleton>
 }

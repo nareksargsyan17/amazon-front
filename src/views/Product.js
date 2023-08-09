@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { changeCartCountRequest, getProductRequest } from "../redux/products/actions";
 import { useEffect, useState } from "react";
@@ -28,13 +28,14 @@ const { Text } = Typography;
 export default function Product() {
   let { productId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     isGetProductRequest,
     isGetProductSuccess,
     cartCount,
     product
   } = useSelector(state => state.products);
-  const { role, isGetUserSuccess } = useSelector(state => state.auth)
+  const { role } = useSelector(state => state.auth)
   const {
     isPostCartSuccess,
     isPostCartFailure
@@ -227,7 +228,7 @@ export default function Product() {
               status="404"
               title="404"
               subTitle="Sorry, the page you visited does not exist."
-              extra={<Button type="primary">Back Home</Button>}
+              extra={<Button type="primary" onClick={() => navigate("/")}>Back Home</Button>}
             />)
         }
       </Skeleton>
